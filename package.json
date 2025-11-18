@@ -1,0 +1,17 @@
+{
+  "name": "halal-hot-chicken-ranker",
+  "version": "1.0.0",
+  "description": "A web app for ranking halal hot chicken restaurants",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["halal", "chicken", "ranking", "restaurant"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
