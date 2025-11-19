@@ -1,54 +1,72 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+const Restaurant = require('./models/Restaurant');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/halal-chicken-ranker';
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// In-memory database for restaurants
-let restaurants = [
-  { id: 1, name: "Dave's", score: 0 },
-  { id: 2, name: "Main Bird", score: 0 },
-  { id: 3, name: "Urban Bird", score: 0 }
-];
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Routes
 
 // Get all restaurants sorted by score (highest to lowest)
-app.get('/api/restaurants', (req, res) => {
-  const sortedRestaurants = [...restaurants].sort((a, b) => b.score - a.score);
-  res.json(sortedRestaurants);
+app.get('/api/restaurants', async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find().sort({ score: -1 });
+    res.json(restaurants);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch restaurants' });
+  }
 });
 
 // Upvote a restaurant
-app.post('/api/restaurants/:id/upvote', (req, res) => {
-  const id = parseInt(req.params.id);
-  const restaurant = restaurants.find(r => r.id === id);
-  
-  if (!restaurant) {
-    return res.status(404).json({ error: 'Restaurant not found' });
+app.post('/api/restaurants/:id/upvote', async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { score: 1 } },
+      { new: true }
+    );
+    
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    
+    res.json(restaurant);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to upvote' });
   }
-  
-  restaurant.score++;
-  res.json(restaurant);
 });
 
 // Downvote a restaurant
-app.post('/api/restaurants/:id/downvote', (req, res) => {
-  const id = parseInt(req.params.id);
-  const restaurant = restaurants.find(r => r.id === id);
-  
-  if (!restaurant) {
-    return res.status(404).json({ error: 'Restaurant not found' });
+app.post('/api/restaurants/:id/downvote', async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { score: -1 } },
+      { new: true }
+    );
+    
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    
+    res.json(restaurant);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to downvote' });
   }
-  
-  restaurant.score--;
-  res.json(restaurant);
 });
 
 // Start server

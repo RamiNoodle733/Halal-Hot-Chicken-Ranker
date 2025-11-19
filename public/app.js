@@ -33,11 +33,11 @@ function displayRestaurants(restaurants) {
                 </div>
             </div>
             <div class="vote-buttons">
-                <button class="vote-btn upvote" onclick="vote(${restaurant.id}, 'upvote')">
+                <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')">
                     <span class="arrow">▲</span>
                     <span class="vote-text">Upvote</span>
                 </button>
-                <button class="vote-btn downvote" onclick="vote(${restaurant.id}, 'downvote')">
+                <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')">
                     <span class="arrow">▼</span>
                     <span class="vote-text">Downvote</span>
                 </button>
