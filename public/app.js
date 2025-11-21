@@ -40,10 +40,14 @@ function renderRestaurants(restaurants) {
 
     container.innerHTML = restaurants.map((restaurant, index) => {
         const rank = index + 1;
+        const delay = index * 0.1; // Stagger delay
         
         return `
-        <div class="card">
-            <div class="rank-col">#${rank}</div>
+        <div class="card" style="animation-delay: ${delay}s">
+            <div class="rank-col">
+                ${rank}
+                <span class="rank-label">RANK</span>
+            </div>
             
             <div class="img-col">
                 <img src="${restaurant.imageUrl || 'https://placehold.co/150x150/292524/ff4500?text=HOT'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/150x150/292524/ff4500?text=HOT'">
