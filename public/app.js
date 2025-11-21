@@ -34,36 +34,55 @@ function renderRestaurants(restaurants) {
     const container = document.getElementById('restaurants-list');
     
     if (restaurants.length === 0) {
-        container.innerHTML = '<div class="loading-state">NO DATA FOUND</div>';
+        container.innerHTML = '<div class="loading-terminal"><span class="cursor">></span> NO TARGETS FOUND IN DATABASE.</div>';
         return;
     }
 
     container.innerHTML = restaurants.map((restaurant, index) => {
         const rank = index + 1;
+        // Calculate a percentage for the "bar" based on score (assuming max score around 100 or relative to max)
+        // For now, let's just make it relative to a hypothetical max of 50 for visual effect, or just random for "tech" feel if score is low.
+        // Actually, let's use the score directly if it's reasonable, or cap it.
+        const scorePercent = Math.min(Math.max(restaurant.score * 2, 10), 100); // Rough visual mapping
         
         return `
-        <div class="rank-item">
-            <div class="rank-number">#${rank}</div>
+        <div class="data-card">
+            <div class="rank-badge">${rank}</div>
             
-            <div class="rank-image-container">
-                <img class="rank-image" src="${restaurant.imageUrl || 'https://placehold.co/100x100/111111/ff3e00?text=CHICKEN'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/100x100/111111/ff3e00?text=CHICKEN'">
+            <div class="img-container">
+                <img src="${restaurant.imageUrl || 'https://placehold.co/150x150/0a0f14/00f3ff?text=NO+IMG'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/150x150/0a0f14/00f3ff?text=ERR'">
+                <div class="img-overlay"></div>
             </div>
             
-            <div class="rank-info">
-                <h2 class="rank-title">
-                    <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
-                </h2>
-                <p class="rank-desc">${restaurant.description || 'No description available.'}</p>
+            <div class="info-module">
+                <div class="info-header">
+                    <h2 class="restaurant-name">
+                        <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
+                    </h2>
+                    <span class="status-tag">ACTIVE</span>
+                </div>
+                <p class="desc-text">${restaurant.description || 'DATA CORRUPTED: NO DESCRIPTION AVAILABLE.'}</p>
             </div>
 
-            <div class="rank-actions">
-                <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')" title="UPVOTE">
-                    <i class="fa-solid fa-caret-up"></i>
-                </button>
-                <div class="score-display">${restaurant.score}</div>
-                <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')" title="DOWNVOTE">
-                    <i class="fa-solid fa-caret-down"></i>
-                </button>
+            <div class="stats-module">
+                <div class="score-bar-container">
+                    <div class="score-label">
+                        <span>SPICE_RATING</span>
+                        <span>${restaurant.score}</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: ${scorePercent}%"></div>
+                    </div>
+                </div>
+                
+                <div class="vote-controls">
+                    <button class="hud-btn up" onclick="vote('${restaurant._id}', 'upvote')" title="CONFIRM">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <button class="hud-btn down" onclick="vote('${restaurant._id}', 'downvote')" title="DENY">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
             </div>
         </div>
     `}).join('');
