@@ -3,66 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tactical ranking system for Halal Hot Chicken locations.">
-    <title>HALAL HOT CHICKEN RANKER // SYSTEM ONLINE</title>
+    <meta name="description" content="The definitive Halal Hot Chicken ranking.">
+    <title>Halal Hot Chicken Ranker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Teko:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="scanline-overlay"></div>
-    <div class="bg-grid"></div>
+    <div class="bg-texture"></div>
     
-    <div class="hud-container">
-        <header class="hud-header">
-            <div class="header-top-bar">
-                <span class="sys-status">SYS.STATUS: <span class="blink">ONLINE</span></span>
-                <span class="sys-time">SECTOR: HALAL_CHICKEN</span>
-                <span class="sys-id">ID: USER_GUEST</span>
+    <div class="main-container">
+        <header class="brand-header">
+            <div class="logo-placeholder">
+                <!-- Logo will go here -->
+                <div class="logo-inner">LOGO</div>
             </div>
-            
-            <div class="main-title-block">
-                <div class="glitch-wrapper">
-                    <h1 class="cyber-title" data-text="HALAL HOT CHICKEN RANKER">HALAL HOT CHICKEN RANKER</h1>
-                </div>
-                <div class="decor-line"></div>
-                <p class="mission-brief">PRIORITY: IDENTIFY TOP TIER SPICE LEVELS</p>
-            </div>
-
-            <div class="control-panel">
-                <div class="search-module">
-                    <label for="search-input">TARGET SEARCH</label>
-                    <div class="input-group">
-                        <i class="fa-solid fa-crosshairs"></i>
-                        <input type="text" id="search-input" placeholder="ENTER DESIGNATION...">
-                    </div>
-                </div>
-                <div class="sort-module">
-                    <label for="sort-select">SORT PROTOCOL</label>
-                    <div class="select-group">
-                        <select id="sort-select">
-                            <option value="score">HIGHEST RATED</option>
-                            <option value="name">ALPHABETICAL</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            <h1 class="brand-title">HALAL HOT CHICKEN <span class="accent">RANKER</span></h1>
+            <p class="brand-subtitle">NO NONSENSE. JUST HEAT.</p>
         </header>
 
-        <main class="main-interface">
-            <div id="restaurants-list" class="data-grid">
-                <!-- Content injected by JS -->
-                <div class="loading-terminal">
-                    <span class="cursor">></span> INITIALIZING DATABASE CONNECTION...
-                </div>
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Find a spot...">
+                <i class="fa-solid fa-magnifying-glass"></i>
             </div>
+            <div class="sort-box">
+                <select id="sort-select">
+                    <option value="score">Highest Rated</option>
+                    <option value="name">Alphabetical</option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </div>
+
+        <main id="restaurants-list" class="rank-feed">
+            <!-- Content injected by JS -->
+            <div class="loading-simple">Loading...</div>
         </main>
 
-        <footer class="hud-footer">
-            <div class="footer-line"></div>
-            <p>SYSTEM VERSION 2.0.25 // END OF LINE</p>
+        <footer>
+            <p>&copy; 2025 Halal Hot Chicken Ranker</p>
         </footer>
     </div>
 
