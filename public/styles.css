@@ -1,3 +1,17 @@
+:root {
+    --primary: #ff4b1f;
+    --primary-dark: #cc2b00;
+    --secondary: #ff9068;
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --border: #334155;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,191 +19,376 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
     min-height: 100vh;
-    padding: 20px;
-    color: #333;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background Shapes */
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+}
+
+.shape-1 {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, var(--primary), transparent);
+}
+
+.shape-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, var(--secondary), transparent);
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 40px 20px;
 }
 
+/* Header */
 header {
     text-align: center;
-    margin-bottom: 40px;
-    color: white;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    filter: drop-shadow(0 0 10px rgba(255, 75, 31, 0.5));
 }
 
 h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(to right, #fff, #cbd5e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.highlight {
+    color: var(--primary);
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
     font-size: 1.2rem;
-    opacity: 0.95;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.restaurants-list {
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    animation: fadeIn 1s ease-out;
+}
+
+.search-bar {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 75, 31, 0.2);
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+}
+
+.sort-options select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+/* Grid/List Layout */
+.restaurants-grid {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    animation: fadeInUp 1s ease-out;
 }
 
-.restaurant-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Row Layout */
+.restaurant-row {
     display: flex;
     align-items: center;
-    gap: 20px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    gap: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.restaurant-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+.restaurant-row:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 75, 31, 0.3);
 }
 
-.restaurant-card.top-rated {
-    border: 3px solid #ffd700;
-    box-shadow: 0 4px 6px rgba(255, 215, 0, 0.3);
+/* Rank Section */
+.rank-section {
+    flex-shrink: 0;
 }
 
-.rank {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #667eea;
-    min-width: 60px;
-    text-align: center;
-}
-
-.restaurant-info {
-    flex: 1;
-}
-
-.restaurant-name {
-    font-size: 1.8rem;
-    color: #2d3748;
-    margin-bottom: 8px;
-}
-
-.score-container {
+.rank-box {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Section */
+.image-section {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    background: #000;
+}
+
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Vote Section */
+.vote-section {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 8px;
+    min-width: 100px;
 }
 
-.score-label {
-    font-size: 1rem;
-    color: #718096;
-}
-
-.score {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #4a5568;
-}
-
-.score.positive {
-    color: #48bb78;
-}
-
-.score.negative {
-    color: #f56565;
-}
-
-.vote-buttons {
+.vote-buttons-row {
     display: flex;
-    flex-direction: column;
     gap: 10px;
 }
 
 .vote-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-main);
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    min-width: 120px;
-}
-
-.vote-btn:active {
-    transform: scale(0.95);
-}
-
-.upvote {
-    background: #48bb78;
-    color: white;
-}
-
-.upvote:hover {
-    background: #38a169;
-}
-
-.downvote {
-    background: #f56565;
-    color: white;
-}
-
-.downvote:hover {
-    background: #e53e3e;
-}
-
-.arrow {
+    justify-content: center;
     font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.vote-btn:hover {
+    transform: translateY(-2px);
+}
+
+.vote-btn.upvote:hover {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.vote-btn.downvote:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}
+
+.vote-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.count-value {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+/* Info Section */
+.info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-header {
+    margin-bottom: 8px;
+}
+
+.question-text {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.restaurant-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.restaurant-name a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.restaurant-name a:hover {
+    color: var(--primary);
+}
+
+.description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .restaurant-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        padding: 20px 15px;
+    }
+
+    .info-section {
+        width: 100%;
+        order: 4;
+    }
+
+    .rank-section { order: 1; }
+    .image-section { order: 2; }
+    .vote-section { order: 3; }
 }
 
 footer {
     text-align: center;
-    margin-top: 50px;
-    color: white;
-    opacity: 0.9;
+    margin-top: 60px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
-.error {
-    background: #fed7d7;
-    color: #c53030;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
+footer i {
+    color: var(--danger);
 }
 
-/* Responsive design */
+/* Animations */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive */
 @media (max-width: 600px) {
-    h1 {
-        font-size: 2rem;
-    }
-
-    .restaurant-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .rank {
-        font-size: 1.5rem;
-    }
-
-    .restaurant-name {
-        font-size: 1.5rem;
-    }
-
-    .vote-buttons {
-        flex-direction: row;
-        width: 100%;
-    }
-
-    .vote-btn {
-        flex: 1;
-    }
+    h1 { font-size: 2.5rem; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .search-bar { min-width: auto; }
 }

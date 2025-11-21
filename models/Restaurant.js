@@ -7,6 +7,18 @@ const restaurantSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  description: {
+    type: String,
+    default: ''
+  },
+  website: {
+    type: String,
+    default: ''
+  },
+  imageUrl: {
+    type: String,
+    default: ''
+  },
   score: {
     type: Number,
     default: 0
