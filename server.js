@@ -69,7 +69,12 @@ app.post('/api/restaurants/:id/downvote', async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🍗 Halal Hot Chicken Ranker server running on http://localhost:${PORT}`);
-});
+// Start server (only for local development)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🍗 Halal Hot Chicken Ranker server running on http://localhost:${PORT}`);
+  });
+}
+
+// Export for Vercel
+module.exports = app;

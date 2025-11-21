@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api';
+// Use relative URL for API calls (works in production and development)
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : '/api';
 
 let allRestaurants = [];
 
