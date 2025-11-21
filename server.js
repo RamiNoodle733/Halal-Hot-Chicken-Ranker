@@ -96,7 +96,7 @@ app.post('/api/restaurants/:id/upvote', async (req, res) => {
     await connectToDatabase();
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
-      { $inc: { score: 1 } },
+      { $inc: { score: 1, upvotes: 1 } },
       { new: true }
     );
     
@@ -117,7 +117,7 @@ app.post('/api/restaurants/:id/downvote', async (req, res) => {
     await connectToDatabase();
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
-      { $inc: { score: -1 } },
+      { $inc: { score: -1, downvotes: 1 } },
       { new: true }
     );
     

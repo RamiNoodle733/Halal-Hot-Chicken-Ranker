@@ -42,14 +42,61 @@ function renderRestaurants(restaurants) {
         const rank = index + 1;
         const delay = index * 0.1; // Stagger delay
         
+        // Calculate total votes (fallback to score if upvotes/downvotes missing)
+        const upvotes = restaurant.upvotes || 0;
+        const downvotes = restaurant.downvotes || 0;
+        const totalVotes = upvotes + downvotes;
+        
+        // Check if user has voted for this restaurant in this session (simple check)
+        const hasVoted = sessionStorage.getItem(`voted-${restaurant._id}`);
+        
+        let voteSectionHtml;
+        
+        if (hasVoted) {
+            // Show "After Vote" state immediately
+            const percentage = totalVotes > 0 ? Math.round((upvotes / totalVotes) * 100) : 0;
+            voteSectionHtml = `
+                <div class="vote-container">
+                    <div class="vote-buttons">
+                        <button class="vote-btn upvote" disabled>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button class="vote-btn downvote" disabled>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                    </div>
+                    <div class="vote-stats">
+                        <div class="split-votes">
+                            <span class="up-count">${upvotes.toLocaleString()}</span>
+                            <span class="down-count">${downvotes.toLocaleString()}</span>
+                        </div>
+                        <div class="percentage-label visible">${percentage}% of people agree!</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Show "Before Vote" state
+            voteSectionHtml = `
+                <div class="vote-container" id="vote-container-${restaurant._id}">
+                    <div class="vote-buttons">
+                        <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                    </div>
+                    <div class="vote-stats" id="vote-stats-${restaurant._id}">
+                        <span class="total-votes">${totalVotes.toLocaleString()} votes</span>
+                    </div>
+                </div>
+            `;
+        }
+        
         return `
         <div class="card" style="animation-delay: ${delay}s">
-            <div class="rank-col">
-                ${rank}
-                <span class="rank-label">RANK</span>
-            </div>
-            
             <div class="img-col">
+                <div class="rank-badge">${rank}</div>
                 <img src="${restaurant.imageUrl || 'https://placehold.co/150x150/292524/ff4500?text=HOT'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/150x150/292524/ff4500?text=HOT'">
             </div>
             
@@ -60,14 +107,8 @@ function renderRestaurants(restaurants) {
                 <p class="card-desc">${restaurant.description || 'No description available.'}</p>
             </div>
 
-            <div class="action-col">
-                <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')" title="Upvote">
-                    <i class="fa-solid fa-caret-up"></i>
-                </button>
-                <div class="score-val">${restaurant.score}</div>
-                <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')" title="Downvote">
-                    <i class="fa-solid fa-caret-down"></i>
-                </button>
+            <div class="vote-col">
+                ${voteSectionHtml}
             </div>
         </div>
     `}).join('');
@@ -75,11 +116,17 @@ function renderRestaurants(restaurants) {
 
 // Handle voting
 async function vote(id, action) {
-    const btn = document.querySelector(`button[onclick="vote('${id}', '${action}')"]`);
-    if (btn) btn.disabled = true;
+    // Optimistic UI Update
+    const container = document.getElementById(`vote-container-${id}`);
+    const statsContainer = document.getElementById(`vote-stats-${id}`);
+    
+    if (!container) return;
+
+    // Disable buttons immediately
+    const buttons = container.querySelectorAll('button');
+    buttons.forEach(btn => btn.disabled = true);
 
     try {
-        // The server expects /api/restaurants/:id/upvote or /api/restaurants/:id/downvote
         const response = await fetch(`${API_URL}/restaurants/${id}/${action}`, {
             method: 'POST',
             headers: {
@@ -90,24 +137,43 @@ async function vote(id, action) {
         if (response.ok) {
             const updatedRestaurant = await response.json();
             
-            // Update local data efficiently without re-fetching everything
+            // Mark as voted in session
+            sessionStorage.setItem(`voted-${id}`, 'true');
+            
+            // Update local data
             const index = allRestaurants.findIndex(r => r._id === id);
             if (index !== -1) {
                 allRestaurants[index] = updatedRestaurant;
-                // Re-sort by score
-                allRestaurants.sort((a, b) => b.score - a.score);
-                renderRestaurants(allRestaurants);
-            } else {
-                loadRestaurants();
             }
+
+            // Calculate new stats
+            const upvotes = updatedRestaurant.upvotes || 0;
+            const downvotes = updatedRestaurant.downvotes || 0;
+            const totalVotes = upvotes + downvotes;
+            const percentage = totalVotes > 0 ? Math.round((upvotes / totalVotes) * 100) : 0;
+
+            // Update UI to "After Vote" state
+            statsContainer.innerHTML = `
+                <div class="split-votes">
+                    <span class="up-count">${upvotes.toLocaleString()}</span>
+                    <span class="down-count">${downvotes.toLocaleString()}</span>
+                </div>
+                <div class="percentage-label">${percentage}% of people agree!</div>
+            `;
+            
+            // Trigger fade in
+            setTimeout(() => {
+                const label = statsContainer.querySelector('.percentage-label');
+                if (label) label.classList.add('visible');
+            }, 50);
+
         } else {
             console.error('Vote failed:', await response.text());
+            buttons.forEach(btn => btn.disabled = false); // Re-enable on error
         }
     } catch (error) {
         console.error('Error voting:', error);
-        alert('Failed to vote. Please try again.');
-    } finally {
-        if (btn) btn.disabled = false;
+        buttons.forEach(btn => btn.disabled = false);
     }
 }
 
