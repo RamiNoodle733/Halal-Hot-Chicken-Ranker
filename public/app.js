@@ -9,13 +9,23 @@ let allRestaurants = [];
 async function loadRestaurants() {
     const container = document.getElementById('restaurants-list');
     try {
+        console.log('Fetching from:', `${API_URL}/restaurants`);
         const response = await fetch(`${API_URL}/restaurants`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error:', errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
         allRestaurants = await response.json();
+        console.log('Loaded restaurants:', allRestaurants);
         renderRestaurants(allRestaurants);
     } catch (error) {
         console.error('Error loading restaurants:', error);
         container.innerHTML = 
-            '<p class="error">Failed to load restaurants. Make sure the server is running.</p>';
+            `<p class="error">Failed to load restaurants: ${error.message}</p>`;
     }
 }
 
