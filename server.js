@@ -14,16 +14,35 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+// MongoDB connection with caching for serverless
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    return cachedDb;
+  }
+
+  const db = await mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  });
+  
+  cachedDb = db;
+  console.log('✅ Connected to MongoDB');
+  return db;
+}
+
+// Initial connection attempt (optional for local dev)
+if (process.env.NODE_ENV !== 'production') {
+  connectToDatabase().catch(err => console.error('❌ MongoDB connection error:', err));
+}
 
 // Routes
 
 // Get all restaurants sorted by score (highest to lowest)
 app.get('/api/restaurants', async (req, res) => {
   try {
+    await connectToDatabase();
     console.log('MongoDB connection state:', mongoose.connection.readyState);
     console.log('Fetching restaurants...');
     const restaurants = await Restaurant.find().sort({ score: -1 });
@@ -38,6 +57,7 @@ app.get('/api/restaurants', async (req, res) => {
 // Upvote a restaurant
 app.post('/api/restaurants/:id/upvote', async (req, res) => {
   try {
+    await connectToDatabase();
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
       { $inc: { score: 1 } },
@@ -50,13 +70,15 @@ app.post('/api/restaurants/:id/upvote', async (req, res) => {
     
     res.json(restaurant);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to upvote' });
+    console.error('Error upvoting:', error);
+    res.status(500).json({ error: 'Failed to upvote', details: error.message });
   }
 });
 
 // Downvote a restaurant
 app.post('/api/restaurants/:id/downvote', async (req, res) => {
   try {
+    await connectToDatabase();
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
       { $inc: { score: -1 } },
@@ -69,7 +91,8 @@ app.post('/api/restaurants/:id/downvote', async (req, res) => {
     
     res.json(restaurant);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to downvote' });
+    console.error('Error downvoting:', error);
+    res.status(500).json({ error: 'Failed to downvote', details: error.message });
   }
 });
 
