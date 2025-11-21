@@ -24,10 +24,14 @@ mongoose.connect(MONGODB_URI)
 // Get all restaurants sorted by score (highest to lowest)
 app.get('/api/restaurants', async (req, res) => {
   try {
+    console.log('MongoDB connection state:', mongoose.connection.readyState);
+    console.log('Fetching restaurants...');
     const restaurants = await Restaurant.find().sort({ score: -1 });
+    console.log('Found restaurants:', restaurants.length);
     res.json(restaurants);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch restaurants' });
+    console.error('Error fetching restaurants:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurants', details: error.message });
   }
 });
 
