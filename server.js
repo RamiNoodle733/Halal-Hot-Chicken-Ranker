@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -10,26 +12,58 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/halal-chicken-ranker';
 
 // Middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for simplicity with external images/scripts
+}));
+app.use(compression()); // Compress responses
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
 // MongoDB connection with caching for serverless
-let cachedDb = null;
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 async function connectToDatabase() {
-  if (cachedDb && mongoose.connection.readyState === 1) {
-    return cachedDb;
+  // If we have a connection and it's ready (readyState 1 = connected), reuse it
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
   }
 
-  const db = await mongoose.connect(MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  });
-  
-  cachedDb = db;
-  console.log('✅ Connected to MongoDB');
-  return db;
+  // If a connection is already being established, wait for it
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false, // Disable mongoose buffering to fail fast if not connected
+      serverSelectionTimeoutMS: 10000, // Wait up to 10s for DB to respond (helps with cold starts)
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+    };
+
+    console.log('Connecting to MongoDB...');
+    
+    // Log masked URI for debugging (safety check)
+    if (MONGODB_URI.includes('localhost') && process.env.NODE_ENV === 'production') {
+      console.warn('⚠️  WARNING: Using localhost MongoDB URI in production!');
+    }
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log('✅ Connected to MongoDB');
+      return mongoose;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error('❌ MongoDB connection error:', e);
+    throw e;
+  }
+
+  return cached.conn;
 }
 
 // Initial connection attempt (optional for local dev)
@@ -42,11 +76,13 @@ if (process.env.NODE_ENV !== 'production') {
 // Get all restaurants sorted by score (highest to lowest)
 app.get('/api/restaurants', async (req, res) => {
   try {
+    // Cache for 60 seconds on Vercel Edge Network, allow stale data while revalidating
+    // This significantly reduces DB load and improves speed for users
+    res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
     await connectToDatabase();
-    console.log('MongoDB connection state:', mongoose.connection.readyState);
-    console.log('Fetching restaurants...');
-    const restaurants = await Restaurant.find().sort({ score: -1 });
-    console.log('Found restaurants:', restaurants.length);
+    // Use lean() for better performance (returns plain JS objects)
+    const restaurants = await Restaurant.find().sort({ score: -1 }).lean();
     res.json(restaurants);
   } catch (error) {
     console.error('Error fetching restaurants:', error);

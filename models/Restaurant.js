@@ -27,6 +27,9 @@ const restaurantSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Index for faster sorting by score
+restaurantSchema.index({ score: -1 });
+
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);
 
 module.exports = Restaurant;

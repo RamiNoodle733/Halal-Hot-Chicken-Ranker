@@ -80,6 +80,9 @@ function renderRestaurants(restaurants) {
 
 // Handle voting
 async function vote(id, action) {
+    const btn = document.querySelector(`button[onclick="vote('${id}', '${action}')"]`);
+    if (btn) btn.disabled = true;
+
     try {
         // The server expects /api/restaurants/:id/upvote or /api/restaurants/:id/downvote
         const response = await fetch(`${API_URL}/restaurants/${id}/${action}`, {
@@ -90,14 +93,26 @@ async function vote(id, action) {
         });
 
         if (response.ok) {
-            // Reload all restaurants to update scores and ranks
-            loadRestaurants();
+            const updatedRestaurant = await response.json();
+            
+            // Update local data efficiently without re-fetching everything
+            const index = allRestaurants.findIndex(r => r._id === id);
+            if (index !== -1) {
+                allRestaurants[index] = updatedRestaurant;
+                // Re-sort by score
+                allRestaurants.sort((a, b) => b.score - a.score);
+                renderRestaurants(allRestaurants);
+            } else {
+                loadRestaurants();
+            }
         } else {
             console.error('Vote failed:', await response.text());
         }
     } catch (error) {
         console.error('Error voting:', error);
         alert('Failed to vote. Please try again.');
+    } finally {
+        if (btn) btn.disabled = false;
     }
 }
 
