@@ -34,7 +34,7 @@ function renderRestaurants(restaurants) {
     const container = document.getElementById('restaurants-list');
     
     if (restaurants.length === 0) {
-        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted);">No restaurants found.</p>';
+        container.innerHTML = '<div class="loading-state">NO DATA FOUND</div>';
         return;
     }
 
@@ -42,37 +42,28 @@ function renderRestaurants(restaurants) {
         const rank = index + 1;
         
         return `
-        <div class="restaurant-row">
-            <div class="rank-section">
-                <div class="rank-box">${rank}</div>
+        <div class="rank-item">
+            <div class="rank-number">#${rank}</div>
+            
+            <div class="rank-image-container">
+                <img class="rank-image" src="${restaurant.imageUrl || 'https://placehold.co/100x100/111111/ff3e00?text=CHICKEN'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/100x100/111111/ff3e00?text=CHICKEN'">
             </div>
             
-            <div class="image-section">
-                <img src="${restaurant.imageUrl || 'https://placehold.co/100x100/1e293b/ff4b1f?text=Chicken'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/100x100/1e293b/ff4b1f?text=Chicken'">
-            </div>
-            
-            <div class="vote-section">
-                <div class="vote-buttons-row">
-                    <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')" title="Upvote">
-                        <i class="fa-solid fa-arrow-up"></i>
-                    </button>
-                    <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')" title="Downvote">
-                        <i class="fa-solid fa-arrow-down"></i>
-                    </button>
-                </div>
-                <div class="vote-count">
-                    <span class="count-value">${restaurant.score}</span> VOTES
-                </div>
+            <div class="rank-info">
+                <h2 class="rank-title">
+                    <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
+                </h2>
+                <p class="rank-desc">${restaurant.description || 'No description available.'}</p>
             </div>
 
-            <div class="info-section">
-                <div class="info-header">
-                    <span class="question-text">Have you tried it?</span>
-                    <h2 class="restaurant-name">
-                        <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
-                    </h2>
-                </div>
-                <p class="description">${restaurant.description || ''}</p>
+            <div class="rank-actions">
+                <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')" title="UPVOTE">
+                    <i class="fa-solid fa-caret-up"></i>
+                </button>
+                <div class="score-display">${restaurant.score}</div>
+                <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')" title="DOWNVOTE">
+                    <i class="fa-solid fa-caret-down"></i>
+                </button>
             </div>
         </div>
     `}).join('');
