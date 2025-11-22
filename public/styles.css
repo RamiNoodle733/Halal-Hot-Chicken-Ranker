@@ -346,12 +346,12 @@ input, select {
 }
 
 .vote-btn.upvote {
-    background-color: #16a34a; /* Green */
+    background-color: #1e3a8a; /* Default Dark Blue */
 }
 
 .vote-btn.downvote {
-    background-color: #dc2626; /* Red */
-    color: white;
+    background-color: #f3f4f6; /* Default Light Grey */
+    color: #9ca3af;
 }
 
 .vote-btn:hover {
@@ -359,23 +359,32 @@ input, select {
 }
 
 .vote-btn.upvote:hover {
-    background-color: #15803d;
+    background-color: #172554;
 }
 
 .vote-btn.downvote:hover {
-    background-color: #b91c1c;
-    color: white;
+    background-color: #e5e7eb;
+    color: #6b7280;
 }
 
+/* Selected States - Colors appear only when clicked */
 .vote-btn.upvote.selected {
-    background-color: #16a34a;
+    background-color: #16a34a; /* Green when selected */
     box-shadow: 0 0 0 2px white, 0 0 0 4px #16a34a;
 }
 
+.vote-btn.upvote.selected:hover {
+    background-color: #15803d;
+}
+
 .vote-btn.downvote.selected {
-    background-color: #dc2626;
+    background-color: #dc2626; /* Red when selected */
     color: white;
     box-shadow: 0 0 0 2px white, 0 0 0 4px #dc2626;
+}
+
+.vote-btn.downvote.selected:hover {
+    background-color: #b91c1c;
 }
 
 /* Vote Stats */
