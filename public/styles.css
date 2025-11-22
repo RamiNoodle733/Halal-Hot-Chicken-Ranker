@@ -367,6 +367,17 @@ input, select {
     color: #6b7280;
 }
 
+.vote-btn.upvote.selected {
+    background-color: #2563eb;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #2563eb;
+}
+
+.vote-btn.downvote.selected {
+    background-color: #4b5563;
+    color: white;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #4b5563;
+}
+
 /* Vote Stats */
 .vote-stats {
     text-align: center;

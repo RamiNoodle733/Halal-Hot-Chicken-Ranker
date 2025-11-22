@@ -47,25 +47,30 @@ function renderRestaurants(restaurants) {
         const downvotes = restaurant.downvotes || 0;
         const totalVotes = upvotes + downvotes;
         
-        // Check if user has voted for this restaurant in this session (simple check)
-        const hasVoted = sessionStorage.getItem(`voted-${restaurant._id}`);
+        // Check if user has voted for this restaurant in this session
+        // Now stores 'upvote' or 'downvote'
+        const userVote = sessionStorage.getItem(`voted-${restaurant._id}`);
         
         let voteSectionHtml;
         
-        if (hasVoted) {
-            // Show "After Vote" state immediately
+        // Determine button classes
+        const upvoteClass = userVote === 'upvote' ? 'vote-btn upvote selected' : 'vote-btn upvote';
+        const downvoteClass = userVote === 'downvote' ? 'vote-btn downvote selected' : 'vote-btn downvote';
+        
+        if (userVote) {
+            // Show "After Vote" state (Split counts)
             const percentage = totalVotes > 0 ? Math.round((upvotes / totalVotes) * 100) : 0;
             voteSectionHtml = `
-                <div class="vote-container">
+                <div class="vote-container" id="vote-container-${restaurant._id}">
                     <div class="vote-buttons">
-                        <button class="vote-btn upvote" disabled>
+                        <button class="${upvoteClass}" onclick="vote('${restaurant._id}', 'upvote')">
                             <i class="fa-solid fa-arrow-up"></i>
                         </button>
-                        <button class="vote-btn downvote" disabled>
+                        <button class="${downvoteClass}" onclick="vote('${restaurant._id}', 'downvote')">
                             <i class="fa-solid fa-arrow-down"></i>
                         </button>
                     </div>
-                    <div class="vote-stats">
+                    <div class="vote-stats" id="vote-stats-${restaurant._id}">
                         <div class="split-votes">
                             <span class="up-count">${upvotes.toLocaleString()}</span>
                             <span class="down-count">${downvotes.toLocaleString()}</span>
@@ -75,7 +80,7 @@ function renderRestaurants(restaurants) {
                 </div>
             `;
         } else {
-            // Show "Before Vote" state
+            // Show "Before Vote" state (Total votes)
             voteSectionHtml = `
                 <div class="vote-container" id="vote-container-${restaurant._id}">
                     <div class="vote-buttons">
@@ -116,29 +121,35 @@ function renderRestaurants(restaurants) {
 
 // Handle voting
 async function vote(id, action) {
-    // Optimistic UI Update
     const container = document.getElementById(`vote-container-${id}`);
     const statsContainer = document.getElementById(`vote-stats-${id}`);
     
     if (!container) return;
 
-    // Disable buttons immediately
+    // Check previous vote
+    const previousAction = sessionStorage.getItem(`voted-${id}`);
+    
+    // If clicking the same button, do nothing
+    if (previousAction === action) return;
+
+    // Disable buttons temporarily
     const buttons = container.querySelectorAll('button');
     buttons.forEach(btn => btn.disabled = true);
 
     try {
-        const response = await fetch(`${API_URL}/restaurants/${id}/${action}`, {
+        const response = await fetch(`${API_URL}/restaurants/${id}/vote`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ action, previousAction })
         });
 
         if (response.ok) {
             const updatedRestaurant = await response.json();
             
-            // Mark as voted in session
-            sessionStorage.setItem(`voted-${id}`, 'true');
+            // Update session storage
+            sessionStorage.setItem(`voted-${id}`, action);
             
             // Update local data
             const index = allRestaurants.findIndex(r => r._id === id);
@@ -152,7 +163,17 @@ async function vote(id, action) {
             const totalVotes = upvotes + downvotes;
             const percentage = totalVotes > 0 ? Math.round((upvotes / totalVotes) * 100) : 0;
 
-            // Update UI to "After Vote" state
+            // Update Buttons Visual State
+            const upBtn = container.querySelector('.upvote');
+            const downBtn = container.querySelector('.downvote');
+            
+            upBtn.classList.remove('selected');
+            downBtn.classList.remove('selected');
+            
+            if (action === 'upvote') upBtn.classList.add('selected');
+            if (action === 'downvote') downBtn.classList.add('selected');
+
+            // Update Stats Area
             statsContainer.innerHTML = `
                 <div class="split-votes">
                     <span class="up-count">${upvotes.toLocaleString()}</span>
@@ -169,10 +190,11 @@ async function vote(id, action) {
 
         } else {
             console.error('Vote failed:', await response.text());
-            buttons.forEach(btn => btn.disabled = false); // Re-enable on error
         }
     } catch (error) {
         console.error('Error voting:', error);
+    } finally {
+        // Re-enable buttons
         buttons.forEach(btn => btn.disabled = false);
     }
 }

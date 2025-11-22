@@ -90,7 +90,51 @@ app.get('/api/restaurants', async (req, res) => {
   }
 });
 
-// Upvote a restaurant
+// Handle voting (upvote, downvote, or swap)
+app.post('/api/restaurants/:id/vote', async (req, res) => {
+  try {
+    await connectToDatabase();
+    const { id } = req.params;
+    const { action, previousAction } = req.body; // action: 'upvote'|'downvote', previousAction: 'upvote'|'downvote'|null
+
+    let update = {};
+
+    if (!previousAction) {
+      // New vote
+      if (action === 'upvote') {
+        update = { $inc: { score: 1, upvotes: 1 } };
+      } else if (action === 'downvote') {
+        update = { $inc: { score: -1, downvotes: 1 } };
+      }
+    } else if (previousAction !== action) {
+      // Swap vote
+      if (action === 'upvote') {
+        // Was downvote, now upvote: +1 up, -1 down, score +2
+        update = { $inc: { score: 2, upvotes: 1, downvotes: -1 } };
+      } else {
+        // Was upvote, now downvote: -1 up, +1 down, score -2
+        update = { $inc: { score: -2, upvotes: -1, downvotes: 1 } };
+      }
+    } else {
+      // Same vote - do nothing or return current state
+      const restaurant = await Restaurant.findById(id);
+      return res.json(restaurant);
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(id, update, { new: true });
+    
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    
+    res.json(restaurant);
+  } catch (error) {
+    console.error('Error voting:', error);
+    res.status(500).json({ error: 'Failed to vote', details: error.message });
+  }
+});
+
+// Upvote a restaurant (Legacy support)
 app.post('/api/restaurants/:id/upvote', async (req, res) => {
   try {
     await connectToDatabase();
