@@ -346,12 +346,12 @@ input, select {
 }
 
 .vote-btn.upvote {
-    background-color: #1e3a8a; /* Dark Blue like reference */
+    background-color: #16a34a; /* Green */
 }
 
 .vote-btn.downvote {
-    background-color: #f3f4f6; /* Light grey */
-    color: #9ca3af;
+    background-color: #dc2626; /* Red */
+    color: white;
 }
 
 .vote-btn:hover {
@@ -359,23 +359,23 @@ input, select {
 }
 
 .vote-btn.upvote:hover {
-    background-color: #172554;
+    background-color: #15803d;
 }
 
 .vote-btn.downvote:hover {
-    background-color: #e5e7eb;
-    color: #6b7280;
+    background-color: #b91c1c;
+    color: white;
 }
 
 .vote-btn.upvote.selected {
-    background-color: #2563eb;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px #2563eb;
+    background-color: #16a34a;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #16a34a;
 }
 
 .vote-btn.downvote.selected {
-    background-color: #4b5563;
+    background-color: #dc2626;
     color: white;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px #4b5563;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #dc2626;
 }
 
 /* Vote Stats */
