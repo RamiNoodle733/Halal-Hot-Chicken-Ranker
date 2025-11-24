@@ -3,6 +3,7 @@ const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const Restaurant = require('./models/Restaurant');
@@ -173,6 +174,53 @@ app.post('/api/restaurants/:id/downvote', async (req, res) => {
   } catch (error) {
     console.error('Error downvoting:', error);
     res.status(500).json({ error: 'Failed to downvote', details: error.message });
+  }
+});
+
+// Submit a new restaurant request
+app.post('/api/request', async (req, res) => {
+  const { name, location, link } = req.body;
+
+  if (!name || !location) {
+    return res.status(400).json({ error: 'Name and location are required' });
+  }
+
+  // If email is not configured, just log it
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log('📝 New Request Received (Email not configured):', { name, location, link });
+    // Return success so the UI doesn't break, but log that email wasn't sent
+    return res.json({ message: 'Request received (logged only)' });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE || 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER, // Send to self
+      subject: `🍗 New Halal Chicken Spot Request: ${name}`,
+      text: `
+        New Restaurant Request:
+        
+        Name: ${name}
+        Location: ${location}
+        Link: ${link || 'N/A'}
+        
+        Sent from Halal Hot Chicken Ranker
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'Request sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Failed to send email' });
   }
 });
 

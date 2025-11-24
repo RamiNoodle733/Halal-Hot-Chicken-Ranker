@@ -35,6 +35,9 @@
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
+            <button id="open-request-modal" class="action-btn">
+                <i class="fa-solid fa-plus"></i> Submit Spot
+            </button>
         </div>
 
         <main id="restaurants-list" class="rank-feed">
@@ -45,6 +48,30 @@
         <footer>
             <p>&copy; 2025 Halal Hot Chicken Ranker</p>
         </footer>
+    </div>
+
+    <!-- Request Modal -->
+    <div id="request-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Submit a Spot</h2>
+            <p>Know a halal hot chicken place we missed? Let us know!</p>
+            <form id="request-form">
+                <div class="form-group">
+                    <label for="req-name">Restaurant Name *</label>
+                    <input type="text" id="req-name" required placeholder="e.g. Cluckin' Good">
+                </div>
+                <div class="form-group">
+                    <label for="req-location">Location (City/State) *</label>
+                    <input type="text" id="req-location" required placeholder="e.g. Houston, TX">
+                </div>
+                <div class="form-group">
+                    <label for="req-link">Website/Maps Link</label>
+                    <input type="url" id="req-link" placeholder="https://...">
+                </div>
+                <button type="submit" class="submit-btn">Send Request</button>
+            </form>
+        </div>
     </div>
 
     <script src="app.js"></script>

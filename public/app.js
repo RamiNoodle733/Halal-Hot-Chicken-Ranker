@@ -224,5 +224,73 @@ function filterAndSort() {
 if (searchInput) searchInput.addEventListener('input', filterAndSort);
 if (sortSelect) sortSelect.addEventListener('change', filterAndSort);
 
+// Modal Logic
+const modal = document.getElementById('request-modal');
+const openBtn = document.getElementById('open-request-modal');
+const closeBtn = document.querySelector('.close-modal');
+const requestForm = document.getElementById('request-form');
+
+if (openBtn) {
+    openBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+}
+
+// Close on outside click
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('active');
+    }
+});
+
+// Handle Request Submission
+if (requestForm) {
+    requestForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = requestForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+
+        const data = {
+            name: document.getElementById('req-name').value,
+            location: document.getElementById('req-location').value,
+            link: document.getElementById('req-link').value
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('Request sent successfully! Thanks for the tip.');
+                modal.classList.remove('active');
+                requestForm.reset();
+            } else {
+                const error = await response.json();
+                alert('Failed to send request: ' + (error.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error sending request:', error);
+            alert('Error sending request. Please try again later.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+        }
+    });
+}
+
 // Load restaurants when page loads
 document.addEventListener('DOMContentLoaded', loadRestaurants);
