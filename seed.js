@@ -35,6 +35,13 @@ const seedRestaurants = async () => {
         description: "Veteran Owned and Operated. Original Nashville style Hot Chicken using only All Natural Halal chicken.",
         website: "https://www.urbanbirdhotchicken.com",
         imageUrl: "/images/urban-bird.jpg"
+      },
+      {
+        name: "Birdside HTX",
+        score: 0,
+        description: "On a mission to serve up 100% Halal fried chicken with a taste unlike anything you've experienced before.",
+        website: "https://birdsidehtx.com",
+        imageUrl: "/images/birdside-htx.jpg"
       }
     ]);
 
