@@ -100,20 +100,51 @@ function renderRestaurants(restaurants) {
         
         return `
         <div class="card" style="animation-delay: ${delay}s">
-            <div class="img-col">
-                <div class="rank-badge">${rank}</div>
-                <img src="${restaurant.imageUrl || 'https://placehold.co/150x150/292524/ff4500?text=HOT'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/150x150/292524/ff4500?text=HOT'">
-            </div>
-            
-            <div class="info-col">
-                <h2 class="card-title">
-                    <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
-                </h2>
-                <p class="card-desc">${restaurant.description || 'No description available.'}</p>
+            <div class="card-main">
+                <div class="img-col">
+                    <div class="rank-badge">${rank}</div>
+                    <img src="${restaurant.imageUrl || 'https://placehold.co/150x150/292524/ff4500?text=HOT'}" alt="${restaurant.name}" onerror="this.src='https://placehold.co/150x150/292524/ff4500?text=HOT'">
+                </div>
+                
+                <div class="info-col">
+                    <h2 class="card-title">
+                        <a href="${restaurant.website || '#'}" target="_blank">${restaurant.name}</a>
+                    </h2>
+                    <p class="card-desc">${restaurant.description || 'No description available.'}</p>
+                    
+                    <button class="toggle-comments-btn" onclick="toggleComments('${restaurant._id}')">
+                        <i class="fa-regular fa-comment"></i> 
+                        <span id="comment-count-${restaurant._id}">${restaurant.comments ? restaurant.comments.length : 0}</span> Comments
+                    </button>
+                </div>
+
+                <div class="vote-col">
+                    ${voteSectionHtml}
+                </div>
             </div>
 
-            <div class="vote-col">
-                ${voteSectionHtml}
+            <div id="comments-${restaurant._id}" class="comments-section">
+                <div class="comments-header">
+                    <span>Comments</span>
+                </div>
+                <div class="comment-list" id="list-${restaurant._id}">
+                    ${(restaurant.comments && restaurant.comments.length > 0) 
+                        ? restaurant.comments.map(c => `
+                            <div class="comment-item">
+                                <div class="comment-meta">
+                                    <span class="comment-author">${c.author || 'Anonymous'}</span>
+                                    <span class="comment-date">${new Date(c.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        `).join('') 
+                        : '<div class="empty-comments">No comments yet. Be the first!</div>'
+                    }
+                </div>
+                <form class="comment-form" onsubmit="submitComment(event, '${restaurant._id}')">
+                    <input type="text" name="commentText" class="comment-input" placeholder="Add a comment..." required>
+                    <button type="submit" class="comment-submit-btn">Post</button>
+                </form>
             </div>
         </div>
     `}).join('');
@@ -294,3 +325,80 @@ if (requestForm) {
 
 // Load restaurants when page loads
 document.addEventListener('DOMContentLoaded', loadRestaurants);
+
+// Toggle Comments Section
+function toggleComments(id) {
+    const section = document.getElementById(`comments-${id}`);
+    if (section) {
+        section.classList.toggle('active');
+    }
+}
+
+// Submit a new comment
+async function submitComment(event, id) {
+    event.preventDefault();
+    const form = event.target;
+    const input = form.querySelector('input[name="commentText"]');
+    const btn = form.querySelector('button');
+    const text = input.value;
+    
+    if (!text.trim()) return;
+
+    // Disable form while submitting
+    input.disabled = true;
+    btn.disabled = true;
+    btn.innerText = '...';
+
+    try {
+        const response = await fetch(`${API_URL}/restaurants/${id}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (response.ok) {
+            const newComment = await response.json();
+            
+            // Add to list
+            const list = document.getElementById(`list-${id}`);
+            const emptyMsg = list.querySelector('.empty-comments');
+            if (emptyMsg) emptyMsg.remove();
+
+            const commentHtml = `
+                <div class="comment-item" style="animation: fadeIn 0.5s ease">
+                    <div class="comment-meta">
+                        <span class="comment-author">${newComment.author || 'Anonymous'}</span>
+                        <span class="comment-date">${new Date(newComment.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div class="comment-text">${newComment.text}</div>
+                </div>
+            `;
+            
+            list.insertAdjacentHTML('beforeend', commentHtml);
+            
+            // Update count
+            const countSpan = document.getElementById(`comment-count-${id}`);
+            if (countSpan) {
+                countSpan.innerText = parseInt(countSpan.innerText) + 1;
+            }
+
+            // Reset form
+            form.reset();
+            
+            // Scroll to bottom of list
+            list.scrollTop = list.scrollHeight;
+        } else {
+            alert('Failed to post comment. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error posting comment:', error);
+        alert('Error posting comment.');
+    } finally {
+        input.disabled = false;
+        btn.disabled = false;
+        btn.innerText = 'Post';
+        input.focus();
+    }
+}

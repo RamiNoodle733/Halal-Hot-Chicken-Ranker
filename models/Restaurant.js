@@ -19,6 +19,11 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  comments: [{
+    text: { type: String, required: true },
+    author: { type: String, default: 'Anonymous' },
+    createdAt: { type: Date, default: Date.now }
+  }],
   upvotes: {
     type: Number,
     default: 0

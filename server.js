@@ -177,6 +177,43 @@ app.post('/api/restaurants/:id/downvote', async (req, res) => {
   }
 });
 
+// Add a comment to a restaurant
+app.post('/api/restaurants/:id/comments', async (req, res) => {
+  try {
+    await connectToDatabase();
+    const { text, author } = req.body;
+    
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({ error: 'Comment text is required' });
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.params.id,
+      { 
+        $push: { 
+          comments: { 
+            text: text.trim(),
+            author: author || 'Anonymous',
+            createdAt: new Date()
+          } 
+        } 
+      },
+      { new: true }
+    );
+
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    // Return the newly added comment (last one in the array)
+    const newComment = restaurant.comments[restaurant.comments.length - 1];
+    res.json(newComment);
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ error: 'Failed to add comment', details: error.message });
+  }
+});
+
 // Submit a new restaurant request
 app.post('/api/request', async (req, res) => {
   const { name, location, link } = req.body;
