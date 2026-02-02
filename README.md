@@ -1,6 +1,7 @@
 # Halal Hot Chicken Ranker 🍗
 
 halalhotchickenranker.com
+
 A full-stack web application for ranking halal hot chicken restaurants with community voting.
 
 ## Features
