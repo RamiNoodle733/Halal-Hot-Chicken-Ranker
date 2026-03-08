@@ -2,170 +2,157 @@ const API_URL = window.location.hostname === 'localhost'
   ? 'http://localhost:5000/api'
   : '/api';
 
-const EXTERNAL_SOURCES = [
-  {
-    key: 'states',
-    label: 'Population & macro baseline (Plotly)',
-    type: 'csv',
-    url: 'https://raw.githubusercontent.com/plotly/datasets/master/2014_usa_states.csv'
-  },
-  {
-    key: 'mobility',
-    label: 'Airport passenger traffic (Plotly)',
-    type: 'csv',
-    url: 'https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv'
-  },
-  {
-    key: 'weather',
-    label: 'Climate drag proxy (Vega datasets)',
-    type: 'csv',
-    url: 'https://raw.githubusercontent.com/vega/vega-datasets/master/data/seattle-weather.csv'
-  },
-  {
-    key: 'ops',
-    label: 'Ops performance baseline (Vega cars)',
-    type: 'json',
-    url: 'https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json'
-  }
-];
-
 const FALLBACK_RESTAURANTS = [
   {
-    name: 'Nashville Inferno Labs',
-    description: 'Research kitchen infusing halal Nashville heat with data-driven prep windows.',
-    website: 'https://example.com/nashville-inferno',
-    imageUrl: 'https://images.unsplash.com/photo-1604908177225-6c1ebd128c8c?auto=format&fit=crop&w=600&q=80',
-    tags: ['nashville-style', 'halal', 'lab'],
-    heatLevel: 9,
-    price: 2,
-    profile: 'Dine-in + kitchen automation',
-    city: 'Nashville',
-    state: 'TN',
-    upvotes: 220,
-    downvotes: 18,
-    score: 202,
-    comments: []
-  },
-  {
-    name: 'Houston Data Fry',
-    description: 'Brisket-spiced hot chicken with a telemetry-driven expo line.',
-    website: 'https://example.com/houston-fry',
-    imageUrl: 'https://images.unsplash.com/photo-1619252584172-d8a9d1cbe1e8?auto=format&fit=crop&w=600&q=80',
-    tags: ['texas heat', 'halal', 'smoke'],
-    heatLevel: 8,
-    price: 3,
-    profile: 'High-volume takeout',
+    name: "Dave's Hot Chicken",
     city: 'Houston',
     state: 'TX',
-    upvotes: 180,
-    downvotes: 12,
-    score: 168,
-    comments: []
-  },
-  {
-    name: 'Queens Halo Heat',
-    description: 'Charcoal bird with peri-peri lab sauces and halal sourcing.',
-    website: 'https://example.com/queens-halo',
-    imageUrl: 'https://images.unsplash.com/photo-1565299543923-37dd378984f4?auto=format&fit=crop&w=600&q=80',
-    tags: ['peri-peri', 'halal', 'charcoal'],
-    heatLevel: 7,
-    price: 2,
-    profile: 'Urban micro-kitchen',
-    city: 'Queens',
-    state: 'NY',
-    upvotes: 142,
-    downvotes: 20,
-    score: 122,
-    comments: []
-  },
-  {
-    name: 'Detroit Voltage',
-    description: 'Electric-red rub with halal thigh-only cuts and crunch metrics.',
-    website: 'https://example.com/detroit-voltage',
-    imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
-    tags: ['halal', 'sandwich', 'crunch'],
-    heatLevel: 8,
-    price: 2,
-    profile: 'Drive-thru analytics',
-    city: 'Detroit',
-    state: 'MI',
-    upvotes: 130,
-    downvotes: 11,
-    score: 119,
-    comments: []
-  },
-  {
-    name: 'Bay Area Scoville Studio',
-    description: 'Farm-to-fire halal chicken with kombu brine and ML spice curves.',
-    website: 'https://example.com/bay-scoville',
-    imageUrl: 'https://images.unsplash.com/photo-1608037521297-27c91064b005?auto=format&fit=crop&w=600&q=80',
-    tags: ['halal', 'ml-driven', 'farm-to-table'],
-    heatLevel: 9,
-    price: 4,
-    profile: 'Tasting counter',
-    city: 'San Francisco',
-    state: 'CA',
-    upvotes: 98,
-    downvotes: 7,
-    score: 91,
-    comments: []
-  },
-  {
-    name: 'Chicago Signal Fry',
-    description: 'Halal fried quarters mapped to foot-traffic layers with dill slaw.',
-    website: 'https://example.com/chicago-signal',
-    imageUrl: 'https://images.unsplash.com/photo-1608039829574-4bf3b0c82b51?auto=format&fit=crop&w=600&q=80',
-    tags: ['midwest', 'halal', 'slaw'],
+    priceTier: 2,
     heatLevel: 6,
-    price: 2,
-    profile: 'Campus-focused pop-up',
-    city: 'Chicago',
-    state: 'IL',
-    upvotes: 110,
-    downvotes: 22,
-    score: 88,
+    flavorScore: 9,
+    crunchScore: 8,
+    valueScore: 7,
+    vibeScore: 7,
+    description: 'Nashville-style sliders, halal-friendly batches, loud spice without wrecking the palate.',
+    website: 'https://daveshotchicken.com',
+    imageUrl: '/images/daves-hot-chicken.jpg',
+    tags: ['sliders', 'late night', 'national favorite'],
     comments: []
   },
   {
-    name: 'Toronto Spice Observatory',
-    description: 'Cardamom smoke, halal certification, and heat telemetry board.',
-    website: 'https://example.com/toronto-observatory',
-    imageUrl: 'https://images.unsplash.com/photo-1608039976986-6e1f34b3a1a2?auto=format&fit=crop&w=600&q=80',
-    tags: ['international', 'halal', 'analytics'],
+    name: 'Main Bird Hot Chicken',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 2,
+    heatLevel: 5,
+    flavorScore: 8,
+    crunchScore: 9,
+    valueScore: 8,
+    vibeScore: 7,
+    description: 'Halal Nashville crunch with balanced heat and a buttery bun that does not fall apart.',
+    website: 'https://mainbirdhotchicken.com',
+    imageUrl: '/images/main-bird.jpg',
+    tags: ['tenders', 'buttermilk', 'halal'],
+    comments: []
+  },
+  {
+    name: 'Urban Bird Hot Chicken',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 3,
     heatLevel: 7,
-    price: 3,
-    profile: 'Ghost kitchen + retail',
-    city: 'Toronto',
-    state: 'ON',
-    upvotes: 101,
-    downvotes: 16,
-    score: 85,
+    flavorScore: 9,
+    crunchScore: 8,
+    valueScore: 7,
+    vibeScore: 8,
+    description: 'Veteran-owned spot doing halal bird with a smoky kick and crisp skin.',
+    website: 'https://www.urbanbirdhotchicken.com',
+    imageUrl: '/images/urban-bird.jpg',
+    tags: ['veteran owned', 'halal certified'],
     comments: []
   },
   {
-    name: 'Atlanta Emberline',
-    description: 'Buttermilk brine with berbere spike and real-time pick-up SLA.',
-    website: 'https://example.com/atl-emberline',
-    imageUrl: 'https://images.unsplash.com/photo-1604908177225-6c1ebd128c8c?auto=format&fit=crop&w=600&q=80',
-    tags: ['southern', 'halal', 'berbere'],
-    heatLevel: 8,
-    price: 2,
-    profile: 'Mixed mode',
-    city: 'Atlanta',
-    state: 'GA',
-    upvotes: 87,
-    downvotes: 9,
-    score: 78,
+    name: 'Birdside HTX',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 2,
+    heatLevel: 6,
+    flavorScore: 8,
+    crunchScore: 8,
+    valueScore: 8,
+    vibeScore: 7,
+    description: 'Fresh halal fried chicken with a citrusy zing and craveable crunch.',
+    website: 'https://birdsidehtx.com',
+    imageUrl: '/images/birdside-htx.jpg',
+    tags: ['food truck', 'fresh fry'],
+    comments: []
+  },
+  {
+    name: 'Clutch City Cluckers',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 2,
+    heatLevel: 6,
+    flavorScore: 8,
+    crunchScore: 7,
+    valueScore: 8,
+    vibeScore: 7,
+    description: 'Food-truck smash that keeps the spice honest and the pickles cold.',
+    website: 'https://clutchcitycluckers.com',
+    imageUrl: '/images/clutch-city-cluckers.jpg',
+    tags: ['food truck', 'sandwich'],
+    comments: []
+  },
+  {
+    name: "Howdy Hot Chicken",
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 2,
+    heatLevel: 5,
+    flavorScore: 8,
+    crunchScore: 8,
+    valueScore: 8,
+    vibeScore: 7,
+    description: 'Friendly heat, halal bird, and a bun that soaks up the sauce.',
+    website: 'https://howdyhotchicken.com',
+    imageUrl: '/images/howdy-hot-chicken.jpg',
+    tags: ['friendly heat', 'quick service'],
+    comments: []
+  },
+  {
+    name: "Yummy's Hot Chicken",
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 1,
+    heatLevel: 5,
+    flavorScore: 7,
+    crunchScore: 7,
+    valueScore: 9,
+    vibeScore: 7,
+    description: 'Family-run halal truck with generous portions and a clean fry.',
+    website: 'https://yummyshotchicken.com',
+    imageUrl: '/images/yummys-hot-chicken.jpg',
+    tags: ['family run', 'budget friendly'],
+    comments: []
+  },
+  {
+    name: 'Houston TX Hot Chicken',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 3,
+    heatLevel: 7,
+    flavorScore: 8,
+    crunchScore: 9,
+    valueScore: 7,
+    vibeScore: 8,
+    description: 'Texas-sized halal sandwiches with a peppery rub and crisp lettuce.',
+    website: 'https://www.hhc.ooo',
+    imageUrl: '/images/houston-tx-hot-chicken.jpg',
+    tags: ['peppery', 'big portions'],
+    comments: []
+  },
+  {
+    name: 'Imperial Hot Chicken',
+    city: 'Houston',
+    state: 'TX',
+    priceTier: 2,
+    heatLevel: 6,
+    flavorScore: 8,
+    crunchScore: 8,
+    valueScore: 8,
+    vibeScore: 7,
+    description: 'Family-owned halal kitchen serving classic Nashville spice with a honey drizzle option.',
+    website: 'https://www.facebook.com/ImperialHotChicken/',
+    imageUrl: '/images/imperial-hot-chicken.png',
+    tags: ['family owned', 'honey drizzle'],
     comments: []
   }
 ];
 
-let state = {
+const state = {
   restaurants: [],
   filtered: [],
-  external: { payload: {}, status: [], summary: {} },
-  charts: {},
-  scenarioLift: 105
+  activeFilter: null
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -174,38 +161,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function bootstrap() {
   wireControls();
-  setLoadingMessage('restaurants-list', 'Loading enriched data...');
-  const [rawRestaurants, external] = await Promise.all([
-    loadRestaurants(),
-    loadExternalSignals()
-  ]);
+  wireListInteractions();
+  setLoadingMessage('restaurants-list', 'Loading spots...');
+  setLoadingMessage('top-list', 'Loading picks...');
+  setLoadingMessage('top-strip', 'Finding the crunchiest bites...');
 
-  state.external = external;
-  const enriched = enrichRestaurants(rawRestaurants, external);
-  state.restaurants = enriched;
-  state.filtered = enriched;
-
-  renderPipeline(external.status, external.summary);
-  renderKpis(enriched, external.summary);
-  renderInsights(enriched, external.summary);
-  renderCharts(enriched, external.summary);
-  renderRestaurants(enriched);
+  const rawRestaurants = await loadRestaurants();
+  state.restaurants = rawRestaurants.map((r, idx) => shapeRestaurant(r, idx));
+  state.filtered = [...state.restaurants];
+  filterAndSort();
 }
 
 function wireControls() {
   const searchInput = document.getElementById('search-input');
   const sortSelect = document.getElementById('sort-select');
+  const ctaRank = document.getElementById('cta-rank');
+
   if (searchInput) searchInput.addEventListener('input', filterAndSort);
   if (sortSelect) sortSelect.addEventListener('change', filterAndSort);
 
-  const slider = document.getElementById('scenario-slider');
-  if (slider) {
-    slider.addEventListener('input', () => {
-      const val = Number(slider.value);
-      state.scenarioLift = val;
-      const label = document.getElementById('scenario-value');
-      if (label) label.textContent = `${val}%`;
-      renderCharts(state.filtered.length ? state.filtered : state.restaurants, state.external.summary);
+  const quickFilters = document.getElementById('quick-filters');
+  if (quickFilters) {
+    quickFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-filter]');
+      if (!btn) return;
+      const filter = btn.dataset.filter;
+      state.activeFilter = state.activeFilter === filter ? null : filter;
+      quickFilters.querySelectorAll('.chip').forEach(chip => chip.classList.toggle('active', chip.dataset.filter === state.activeFilter));
+      filterAndSort();
+    });
+  }
+
+  if (ctaRank) {
+    ctaRank.addEventListener('click', () => {
+      document.getElementById('rankings')?.scrollIntoView({ behavior: 'smooth' });
     });
   }
 
@@ -248,6 +237,51 @@ function wireControls() {
   }
 }
 
+function wireListInteractions() {
+  const list = document.getElementById('restaurants-list');
+  if (!list) return;
+
+  list.addEventListener('click', (e) => {
+    const voteBtn = e.target.closest('.vote-btn');
+    if (voteBtn) {
+      const id = voteBtn.dataset.id;
+      const action = voteBtn.dataset.action;
+      if (id && action) vote(id, action);
+      return;
+    }
+
+    const replyBtn = e.target.closest('.reply-btn');
+    if (replyBtn) {
+      const commentId = replyBtn.dataset.comment;
+      const restaurantId = replyBtn.dataset.restaurant;
+      const form = list.querySelector(`.reply-form[data-restaurant=\"${restaurantId}\"][data-comment=\"${commentId}\"]`);
+      form?.querySelector('.reply-input')?.focus();
+    }
+  });
+
+  list.addEventListener('submit', (e) => {
+    const commentForm = e.target.closest('.comment-form');
+    const replyForm = e.target.closest('.reply-form');
+
+    if (commentForm) {
+      e.preventDefault();
+      const restaurantId = commentForm.dataset.restaurant;
+      const input = commentForm.querySelector('.comment-input');
+      const text = input?.value || '';
+      if (restaurantId && text.trim()) submitComment(restaurantId, text, commentForm);
+    }
+
+    if (replyForm) {
+      e.preventDefault();
+      const restaurantId = replyForm.dataset.restaurant;
+      const commentId = replyForm.dataset.comment;
+      const input = replyForm.querySelector('.reply-input');
+      const text = input?.value || '';
+      if (restaurantId && commentId && text.trim()) submitReply(restaurantId, commentId, text, replyForm);
+    }
+  });
+}
+
 async function loadRestaurants() {
   try {
     const res = await fetch(`${API_URL}/restaurants`);
@@ -260,366 +294,160 @@ async function loadRestaurants() {
   }
 }
 
-async function loadExternalSignals() {
-  const payload = {};
-  const status = [];
+function shapeRestaurant(data, idx) {
+  const fallback = FALLBACK_RESTAURANTS[idx % FALLBACK_RESTAURANTS.length] || {};
+  const base = { ...fallback, ...data };
+  const synthetic = !data._id;
+  const _id = data._id || `synthetic-${hashToNumber(base.name + idx)}`;
+  const heatLevel = clamp(base.heatLevel ?? deriveHeatLevel(idx), 1, 10);
+  const priceTier = clamp(base.priceTier ?? 2, 1, 4);
+  const flavorScore = clamp(base.flavorScore ?? 7 + (idx % 3), 1, 10);
+  const crunchScore = clamp(base.crunchScore ?? 6 + (idx % 4), 1, 10);
+  const valueScore = clamp(base.valueScore ?? (10 - priceTier) + (idx % 3), 1, 10);
+  const vibeScore = clamp(base.vibeScore ?? 6 + (idx % 3), 1, 10);
+  const comments = (base.comments || []).map(enrichComment);
 
-  for (const source of EXTERNAL_SOURCES) {
-    const entry = { key: source.key, label: source.label, status: 'loading', rows: 0 };
-    try {
-      const res = await fetch(source.url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const text = await res.text();
-      const data = source.type === 'json' ? JSON.parse(text) : parseCSV(text);
-      payload[source.key] = data;
-      entry.status = 'ready';
-      entry.rows = data.length;
-    } catch (error) {
-      entry.status = 'degraded';
-      entry.error = error.message;
-      payload[source.key] = [];
-    }
-    status.push(entry);
-  }
+  const restaurant = {
+    ...base,
+    _id,
+    synthetic,
+    heatLevel,
+    priceTier,
+    flavorScore,
+    crunchScore,
+    valueScore,
+    vibeScore,
+    tags: base.tags || fallback.tags || [],
+    comments,
+    upvotes: base.upvotes || 0,
+    downvotes: base.downvotes || 0,
+    score: base.score || 0,
+    imageUrl: base.imageUrl || fallback.imageUrl || '',
+    location: base.location || `${base.city || 'Somewhere'}, ${base.state || 'USA'}`
+  };
 
-  return { payload, status, summary: buildSignalSummary(payload) };
+  restaurant.fanScore = computeFanScore(restaurant);
+  restaurant.engagement = computeEngagement(restaurant);
+  return restaurant;
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines.shift().split(',').map(h => h.trim());
-  return lines
-    .filter(Boolean)
-    .map(line => {
-      const cells = line.split(',').map(cell => cell.trim());
-      const obj = {};
-      headers.forEach((header, idx) => {
-        obj[header] = cells[idx];
-      });
-      return obj;
-    });
-}
-
-function buildSignalSummary(payload) {
-  const states = payload.states || [];
-  const mobility = payload.mobility || [];
-  const weather = payload.weather || [];
-  const ops = payload.ops || [];
-
-  const totalPopulation = states.reduce((sum, row) => sum + Number(row.Population || 0), 0);
-  const topState = [...states].sort((a, b) => Number(b.Population || 0) - Number(a.Population || 0))[0];
-  const avgPrecip = weather.length
-    ? weather.reduce((sum, row) => sum + Number(row.precipitation || 0), 0) / weather.length
-    : 0;
-  const avgTraffic = mobility.length
-    ? mobility.reduce((sum, row) => sum + Number(row.cnt || 0), 0) / mobility.length
-    : 0;
-  const avgOps = ops.length
-    ? ops.reduce((sum, car) => sum + Number(car.Horsepower || 0), 0) / ops.length
-    : 0;
-
+function enrichComment(comment) {
   return {
-    totalPopulation,
-    topState,
-    avgPrecip: Number(avgPrecip.toFixed(2)),
-    avgTraffic: Math.round(avgTraffic),
-    avgOps: Math.round(avgOps),
-    externalRows: states.length + mobility.length + weather.length + ops.length
+    ...comment,
+    _id: comment._id || `c-${hashToNumber(comment.text || Math.random().toString())}-${Date.now()}`,
+    replies: (comment.replies || []).map(reply => ({
+      ...reply,
+      _id: reply._id || `r-${hashToNumber(reply.text || Math.random().toString())}-${Date.now()}`
+    }))
   };
 }
 
-function enrichRestaurants(restaurants, signals) {
-  const statesPool = signals.payload.states || [];
-  const mobility = signals.payload.mobility || [];
-  const weather = signals.payload.weather || [];
-  const opsPool = signals.payload.ops || [];
+function computeFanScore(r) {
+  const netVotes = (r.upvotes || 0) - (r.downvotes || 0);
+  const flavorWeight = r.flavorScore * 2.2;
+  const valueWeight = r.valueScore * 1.6;
+  const vibeWeight = r.vibeScore * 1.2;
+  const heatPenalty = Math.max(0, r.heatLevel - 7) * 0.6;
+  const baseScore = r.score || 0;
+  return Math.max(1, Math.round((flavorWeight + valueWeight + vibeWeight + baseScore + netVotes) - heatPenalty));
+}
 
-  return restaurants.map((restaurant, idx) => {
-    const fallback = FALLBACK_RESTAURANTS[idx % FALLBACK_RESTAURANTS.length];
-    const base = { ...fallback, ...restaurant };
-    const synthetic = !restaurant._id;
-    const _id = restaurant._id || `synthetic-${hashToNumber(base.name + idx)}`;
-    const location = base.location || deriveLocation(statesPool, mobility, idx);
-    const demand = deriveDemand(mobility, location, idx);
-    const climateDrag = deriveClimateDrag(weather, idx);
-    const opsScore = deriveOpsScore(opsPool, idx);
-    const heatLevel = base.heatLevel ?? deriveHeatLevel(weather, idx);
-    const engagement = (base.upvotes || 0) + (base.downvotes || 0) + (base.comments?.length || 0);
-    const viabilityScore = Math.max(1, Math.min(100, Math.round((heatLevel * 3) + (demand * 0.6) + (opsScore * 0.9) - (climateDrag * 0.4))));
-    const riskScore = Math.max(1, Math.min(10, Math.round(10 - (heatLevel / 2) + (climateDrag / 3) + (base.downvotes || 0) * 0.02)));
-    const signalScore = Math.round((base.score || 0) + viabilityScore / 2 + demand / 4 + opsScore / 3);
-    const forecast = generateForecast(hashToNumber(_id), signalScore);
+function computeEngagement(r) {
+  return (r.upvotes || 0) + (r.downvotes || 0) + (r.comments?.length || 0);
+}
 
-    return {
-      ...base,
-      _id,
-      synthetic,
-      location,
-      demand: Math.round(demand),
-      climateDrag: Number(climateDrag.toFixed(2)),
-      opsScore: Math.round(opsScore),
-      viabilityScore,
-      riskScore,
-      heatLevel,
-      signalScore,
-      engagement,
-      forecast,
-      tags: base.tags || fallback.tags || ['halal', 'hot-chicken'],
-      profile: base.profile || fallback.profile || 'Mixed-mode service'
-    };
+function deriveHeatLevel(idx) {
+  const base = 5 + (idx % 4);
+  return clamp(base, 1, 10);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function filterAndSort() {
+  const searchTerm = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const sortBy = document.getElementById('sort-select')?.value || 'fan';
+
+  let filtered = state.restaurants.filter(r => {
+    const haystack = [r.name, r.description, r.location, ...(r.tags || [])]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return haystack.includes(searchTerm);
   });
-}
 
-function deriveLocation(states, mobility, idx) {
-  const stateRow = states[idx % Math.max(states.length, 1)] || {};
-  const mobilityRow = mobility[idx % Math.max(mobility.length, 1)] || {};
-  const city = mobilityRow.city || stateRow.State || 'Multi-city';
-  const state = mobilityRow.state || stateRow.Abbreviation || stateRow.Postal || 'US';
-  return `${city}, ${state}`;
-}
-
-function deriveDemand(mobility, location, idx) {
-  if (!mobility.length) return 120 + (idx * 3);
-  const mobilityRow = mobility[idx % mobility.length];
-  const baseline = Number(mobilityRow.cnt || 0) / 100;
-  return baseline + (location.includes('NY') ? 18 : 0) + (idx % 5);
-}
-
-function deriveClimateDrag(weather, idx) {
-  if (!weather.length) return 0;
-  const row = weather[idx % weather.length];
-  const precipitation = Number(row.precipitation || 0);
-  const wind = Number(row.wind || 0);
-  return precipitation * 4 + wind;
-}
-
-function deriveOpsScore(opsPool, idx) {
-  if (!opsPool.length) return 60 + (idx * 2);
-  const car = opsPool[idx % opsPool.length];
-  const horsepower = Number(car.Horsepower || 100);
-  const acceleration = Number(car.Acceleration || 10);
-  return (horsepower * 0.4) + (acceleration * 6);
-}
-
-function deriveHeatLevel(weather, idx) {
-  if (!weather.length) return 7 + (idx % 3);
-  const row = weather[idx % weather.length];
-  const tempMax = Number(row.temp_max || 60);
-  return Math.max(5, Math.min(10, Math.round((tempMax - 40) / 5)));
-}
-
-function generateForecast(seed, startValue) {
-  const base = startValue || 80;
-  const series = [];
-  let current = base;
-  for (let i = 0; i < 12; i++) {
-    const volatility = ((seed % 7) - 3) * 0.6;
-    const drift = 2 + (i * 0.4);
-    current = current + drift + volatility;
-    series.push(Math.max(10, Math.round(current)));
-  }
-  return series;
-}
-
-function renderKpis(restaurants, summary) {
-  const total = restaurants.length;
-  const avgViability = restaurants.reduce((sum, r) => sum + (r.viabilityScore || 0), 0) / Math.max(total, 1);
-  const engagement = restaurants.reduce((sum, r) => sum + (r.engagement || 0), 0) / Math.max(total, 1);
-
-  const setText = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  };
-
-  setText('kpi-total', total);
-  setText('kpi-viability', `${Math.round(avgViability)} / 100`);
-  setText('kpi-engagement', `${Math.round(engagement)} events`);
-  setText('kpi-rows', summary.externalRows || '—');
-}
-
-function renderPipeline(status, summary) {
-  const grid = document.getElementById('pipeline-grid');
-  if (!grid) return;
-
-  const summaryLabel = document.getElementById('pipeline-summary');
-  if (summaryLabel) {
-    summaryLabel.textContent = `${status.filter(s => s.status === 'ready').length}/${status.length} connectors live • ${summary.externalRows || 0} rows`;
+  if (state.activeFilter === 'budget') {
+    filtered = filtered.filter(r => r.priceTier <= 2);
+  } else if (state.activeFilter === 'juicy') {
+    filtered = filtered.filter(r => r.flavorScore >= 8 || r.crunchScore >= 8);
+  } else if (state.activeFilter === 'city') {
+    filtered = filtered.filter(r => r.city || r.state || r.location);
   }
 
-  grid.innerHTML = status.map(entry => `
-    <div class="pipeline-card">
-      <div class="status status-${entry.status}">
-        ${entry.status === 'ready' ? 'Ready' : entry.status === 'degraded' ? 'Degraded' : 'Loading'}
+  if (sortBy === 'fan') {
+    filtered.sort((a, b) => b.fanScore - a.fanScore);
+  } else if (sortBy === 'flavor') {
+    filtered.sort((a, b) => b.flavorScore - a.flavorScore);
+  } else if (sortBy === 'value') {
+    filtered.sort((a, b) => b.valueScore - a.valueScore);
+  } else if (sortBy === 'heat') {
+    filtered.sort((a, b) => a.heatLevel - b.heatLevel);
+  }
+
+  state.filtered = filtered;
+  renderBoard(filtered);
+  renderTopList(filtered);
+  renderRestaurants(filtered);
+  updateLiveMeta();
+}
+
+function updateLiveMeta() {
+  const meta = document.getElementById('live-meta');
+  if (!meta) return;
+  const totalVotes = state.restaurants.reduce((sum, r) => sum + (r.upvotes || 0) + (r.downvotes || 0), 0);
+  meta.textContent = `${state.restaurants.length} spots • ${totalVotes} votes tallied`;
+}
+
+function renderTopList(restaurants) {
+  const list = document.getElementById('top-list');
+  if (!list) return;
+  const top = [...restaurants].sort((a, b) => b.fanScore - a.fanScore).slice(0, 3);
+
+  if (!top.length) {
+    list.innerHTML = '<div class="loading-simple">No spots yet.</div>';
+    return;
+  }
+
+  list.innerHTML = top.map((r, idx) => `
+    <div class="mini-item">
+      <div>
+        <strong>${idx + 1}. ${r.name}</strong>
+        <span>${r.location || r.city || ''}</span>
       </div>
-      <h4>${entry.label}</h4>
-      <p class="small-text">${entry.rows} rows ingested</p>
-      ${entry.error ? `<p class="small-text" style="color:#fbbf77">Fallback in use: ${entry.error}</p>` : ''}
+      <div>
+        <div style="font-weight:800;color:#f7c548;">${r.fanScore}</div>
+        <span style="color:#cfbdb2">fan score</span>
+      </div>
     </div>
   `).join('');
 }
 
-function renderInsights(restaurants, summary) {
-  const container = document.getElementById('insight-feed');
-  if (!container) return;
+function renderBoard(restaurants) {
+  const strip = document.getElementById('top-strip');
+  if (!strip) return;
+  const top = [...restaurants].sort((a, b) => b.fanScore - a.fanScore).slice(0, 4);
 
-  const best = [...restaurants].sort((a, b) => b.signalScore - a.signalScore)[0];
-  const fastestGrowth = restaurants.map(r => ({
-    name: r.name,
-    growth: (r.forecast?.slice(-3).reduce((a, b) => a + b, 0) || 0) - (r.forecast?.slice(0, 3).reduce((a, b) => a + b, 0) || 0)
-  })).sort((a, b) => b.growth - a.growth)[0];
-
-  const cards = [
-    {
-      title: 'Top signal route',
-      body: best ? `${best.name} leads with signal ${best.signalScore} and viability ${best.viabilityScore}/100.` : 'Data loading...'
-    },
-    {
-      title: 'Macro overlay',
-      body: summary.topState ? `Largest macro lift from ${summary.topState.State} (${Number(summary.topState.Population || 0).toLocaleString()} population baseline).` : 'Waiting for state data.'
-    },
-    {
-      title: 'Growth runway',
-      body: fastestGrowth ? `${fastestGrowth.name} shows strongest 90d lift in forecasted sentiment.` : 'Forecasts warming up.'
-    }
-  ];
-
-  container.innerHTML = cards.map(card => `
-    <div class="insight-card">
-      <h4>${card.title}</h4>
-      <p>${card.body}</p>
+  strip.innerHTML = top.map((r, idx) => `
+    <div class="top-card">
+      <div class="top-rank">#${idx + 1}</div>
+      <h4>${r.name}</h4>
+      <p>${r.location || r.city || 'Unknown'} • ${r.tags?.slice(0, 2).join(' • ') || 'Solid pick'}</p>
+      <div class="progress-bar" aria-label="fan score">
+        <div class="progress-fill" style="width:${Math.min(r.fanScore, 100)}%"></div>
+      </div>
     </div>
   `).join('');
-}
-
-function renderCharts(restaurants, summary) {
-  const scenarioLift = state.scenarioLift / 100;
-  const top = [...restaurants].sort((a, b) => b.signalScore - a.signalScore).slice(0, 8);
-  const aggregated = aggregateForecast(restaurants, scenarioLift);
-
-  drawChart('chart-topline', {
-    type: 'bar',
-    data: {
-      labels: top.map(r => r.name),
-      datasets: [{
-        label: 'Signal',
-        data: top.map(r => r.signalScore),
-        backgroundColor: 'rgba(245,134,52,0.6)',
-        borderColor: '#f58634',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { grid: { color: '#1f2538' }, ticks: { color: '#dfe3f4' } },
-        x: { ticks: { color: '#dfe3f4' } }
-      }
-    }
-  });
-
-  drawChart('chart-trend', {
-    type: 'line',
-    data: {
-      labels: aggregated.labels,
-      datasets: [
-        {
-          label: 'Baseline forecast',
-          data: aggregated.baseline,
-          borderColor: '#7cf8c5',
-          backgroundColor: 'rgba(124,248,197,0.2)',
-          tension: 0.3
-        },
-        {
-          label: 'Scenario adjusted',
-          data: aggregated.scenario,
-          borderColor: '#f58634',
-          backgroundColor: 'rgba(245,134,52,0.15)',
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { color: '#dfe3f4' } } },
-      scales: {
-        y: { grid: { color: '#1f2538' }, ticks: { color: '#dfe3f4' } },
-        x: { ticks: { color: '#dfe3f4' } }
-      }
-    }
-  });
-
-  const median = calcMedianProfile(restaurants);
-  drawChart('chart-radar', {
-    type: 'radar',
-    data: {
-      labels: ['Heat', 'Ops', 'Demand', 'Viability', 'Risk'],
-      datasets: [
-        {
-          label: 'Portfolio median',
-          data: [median.heat, median.ops, median.demand, median.viability, 10 - median.risk],
-          backgroundColor: 'rgba(245,134,52,0.2)',
-          borderColor: '#f58634'
-        },
-        {
-          label: 'Macro baseline',
-          data: [7, summary.avgOps / 15 || 6, summary.avgTraffic / 800 || 5, 60, 6],
-          backgroundColor: 'rgba(124,248,197,0.15)',
-          borderColor: '#7cf8c5'
-        }
-      ]
-    },
-    options: {
-      plugins: { legend: { labels: { color: '#dfe3f4' } } },
-      scales: { r: { angleLines: { color: '#1f2538' }, grid: { color: '#1f2538' }, pointLabels: { color: '#dfe3f4' } } }
-    }
-  });
-}
-
-function aggregateForecast(restaurants, lift) {
-  const labels = Array.from({ length: 12 }, (_, i) => `M${i + 1}`);
-  const baseline = Array(12).fill(0);
-  const scenario = Array(12).fill(0);
-
-  restaurants.forEach(r => {
-    r.forecast?.forEach((value, idx) => {
-      baseline[idx] += value;
-      scenario[idx] += value * lift;
-    });
-  });
-
-  const count = Math.max(restaurants.length, 1);
-  return {
-    labels,
-    baseline: baseline.map(v => Math.round(v / count)),
-    scenario: scenario.map(v => Math.round(v / count))
-  };
-}
-
-function calcMedianProfile(restaurants) {
-  const numbers = (arr) => arr.slice().sort((a, b) => a - b);
-  const median = (arr) => {
-    const sorted = numbers(arr);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-  };
-
-  return {
-    heat: median(restaurants.map(r => r.heatLevel || 0)),
-    ops: median(restaurants.map(r => r.opsScore || 0)),
-    demand: median(restaurants.map(r => r.demand || 0)),
-    viability: median(restaurants.map(r => r.viabilityScore || 0)),
-    risk: median(restaurants.map(r => r.riskScore || 0))
-  };
-}
-
-function drawChart(canvasId, config) {
-  const el = document.getElementById(canvasId);
-  if (!el) return;
-  if (state.charts[canvasId]) {
-    state.charts[canvasId].destroy();
-  }
-  state.charts[canvasId] = new Chart(el, config);
 }
 
 function renderRestaurants(restaurants) {
@@ -633,67 +461,80 @@ function renderRestaurants(restaurants) {
 
   container.innerHTML = restaurants.map((restaurant, index) => {
     const rank = index + 1;
+    const activeVote = sessionStorage.getItem(`voted-${restaurant._id}`);
     const totalVotes = (restaurant.upvotes || 0) + (restaurant.downvotes || 0);
-    const percentage = totalVotes > 0 ? Math.round(((restaurant.upvotes || 0) / totalVotes) * 100) : 0;
-    const bars = (restaurant.forecast || []).slice(0, 12).map((value, idx) => `<div class="spark-bar ${idx < 3 ? 'muted' : ''}" style="height:${Math.max(10, value / 2)}px"></div>`).join('');
+    const agree = totalVotes > 0 ? Math.round((restaurant.upvotes || 0) / totalVotes * 100) : 0;
+    const priceLabel = '$'.repeat(restaurant.priceTier || 1);
 
     return `
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="eyebrow">${restaurant.location || 'Unknown market'} • ${restaurant.profile}</div>
-            <h3>${rank}. ${restaurant.name}</h3>
-            <p class="card-desc">${restaurant.description || 'No description available.'}</p>
-            <div class="tag-row">
-              ${restaurant.tags?.map(tag => `<span class="tag">${tag}</span>`).join('')}
+      <article class="card" data-id="${restaurant._id}">
+        <div class="card-head">
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div class="card-thumb" style="background-image:url('${restaurant.imageUrl || ''}');"></div>
+            <div>
+              <div class="card-meta">${restaurant.location || 'Halal hot chicken'} • ${restaurant.tags?.[0] || 'fan pick'}</div>
+              <h3>${rank}. ${restaurant.name}</h3>
+              <p class="card-desc">${sanitize(restaurant.description || 'No description yet.')}</p>
+              <div class="card-tags">
+                <span class="tag">${priceLabel} price</span>
+                <span class="tag">Heat ${restaurant.heatLevel}/10</span>
+                <span class="tag">${restaurant.vibeScore}/10 vibe</span>
+                <span class="tag">${restaurant.city || ''} ${restaurant.state || ''}</span>
+              </div>
             </div>
           </div>
           <div class="score-badge">
-            ${restaurant.signalScore}
-            <div style="font-size:12px;color:#ffd7b7;">signal</div>
+            ${restaurant.fanScore}
+            <span>fan score</span>
           </div>
         </div>
 
-        <div class="metric-row">
-          <div class="metric"><span>Heat index</span><strong>${restaurant.heatLevel}/10</strong></div>
-          <div class="metric"><span>Demand</span><strong>${restaurant.demand}</strong></div>
-          <div class="metric"><span>Ops score</span><strong>${restaurant.opsScore}</strong></div>
-          <div class="metric"><span>Risk</span><strong>${restaurant.riskScore}/10</strong></div>
+        <div class="metrics">
+          ${metricBlock('Flavor', restaurant.flavorScore)}
+          ${metricBlock('Crunch', restaurant.crunchScore)}
+          ${metricBlock('Value', restaurant.valueScore)}
+          ${metricBlock('Heat honesty', restaurant.heatLevel)}
         </div>
 
-        <div class="sparkline">${bars}</div>
-
-        <div class="vote-container" id="vote-container-${restaurant._id}">
+        <div class="vote-row">
           <div class="vote-buttons">
-            <button class="vote-btn upvote" onclick="vote('${restaurant._id}', 'upvote')">
-              <i class="fa-solid fa-arrow-up"></i>
-            </button>
-            <button class="vote-btn downvote" onclick="vote('${restaurant._id}', 'downvote')">
-              <i class="fa-solid fa-arrow-down"></i>
-            </button>
+            <button class="vote-btn ${activeVote === 'upvote' ? 'selected' : ''}" data-id="${restaurant._id}" data-action="upvote" aria-label="Upvote ${restaurant.name}"><i class="fa-solid fa-fire"></i></button>
+            <button class="vote-btn ${activeVote === 'downvote' ? 'selected' : ''}" data-id="${restaurant._id}" data-action="downvote" aria-label="Downvote ${restaurant.name}"><i class="fa-solid fa-thumbs-down"></i></button>
           </div>
-          <div class="vote-stats" id="vote-stats-${restaurant._id}">
-            <span class="total-votes">${totalVotes.toLocaleString()} votes</span>
-            <span class="percentage-label">${percentage}% agree</span>
+          <div class="vote-stats">
+            <span>${totalVotes.toLocaleString()} votes</span>
+            <span>${agree}% agree</span>
           </div>
+          <a class="ghost-btn" href="${restaurant.website || '#'}" target="_blank" rel="noopener">Visit site</a>
         </div>
 
-        <div class="comments-section" id="comments-${restaurant._id}">
-          <div class="comments-header">
+        <div class="comment-block">
+          <div class="comment-row">
             <span>Comments</span>
-            <span id="comment-count-${restaurant._id}" class="eyebrow">${restaurant.comments ? restaurant.comments.length : 0}</span>
+            <span class="eyebrow">${restaurant.comments ? restaurant.comments.length : 0}</span>
           </div>
-          <div class="comment-list" id="list-${restaurant._id}">
+          <div class="comment-list">
             ${renderComments(restaurant)}
           </div>
-          <form class="comment-form" onsubmit="submitComment(event, '${restaurant._id}')">
-            <input type="text" name="commentText" class="comment-input" placeholder="Add a comment..." required>
+          <form class="comment-form" data-restaurant="${restaurant._id}">
+            <input type="text" name="commentText" class="comment-input" placeholder="Drop a note about the crunch, sauce, or price..." required>
             <button type="submit" class="comment-submit-btn">Post</button>
           </form>
         </div>
-      </div>
+      </article>
     `;
   }).join('');
+}
+
+function metricBlock(label, value, invert = false) {
+  const width = clamp(invert ? value * 10 : value * 10, 5, 100);
+  return `
+    <div class="metric">
+      <span>${label}</span>
+      <strong>${invert ? 10 - value : value}/10</strong>
+      <div class="progress-bar"><div class="progress-fill" style="width:${width}%"></div></div>
+    </div>
+  `;
 }
 
 function renderComments(restaurant) {
@@ -701,41 +542,34 @@ function renderComments(restaurant) {
     return '<div class="empty-comments">No comments yet. Be the first!</div>';
   }
 
-  return restaurant.comments.map(c => `
-    <div class="comment-item">
+  return restaurant.comments.map(comment => `
+    <div class="comment-item" data-comment="${comment._id}">
       <div class="comment-meta">
-        <span class="comment-author">${c.author || 'Anonymous'}</span>
-        <span class="comment-date">${new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
+        <span class="comment-author">${sanitize(comment.author || 'Anonymous')}</span>
+        <span class="comment-date">${formatDate(comment.createdAt)}</span>
       </div>
-      <div class="comment-text">${c.text}</div>
+      <div class="comment-text">${sanitize(comment.text)}</div>
+      <button class="reply-btn" type="button" data-comment="${comment._id}" data-restaurant="${restaurant._id}">Reply</button>
+      ${renderReplies(restaurant, comment)}
+      <form class="reply-form" data-restaurant="${restaurant._id}" data-comment="${comment._id}">
+        <input type="text" name="replyText" class="reply-input" placeholder="Reply to ${sanitize(comment.author || 'this comment')}" required>
+        <button type="submit" class="comment-submit-btn">Send</button>
+      </form>
     </div>
   `).join('');
 }
 
-function filterAndSort() {
-  const searchTerm = (document.getElementById('search-input')?.value || '').toLowerCase();
-  const sortBy = document.getElementById('sort-select')?.value || 'signal';
-
-  let filtered = state.restaurants.filter(r =>
-    r.name.toLowerCase().includes(searchTerm) ||
-    (r.description && r.description.toLowerCase().includes(searchTerm)) ||
-    (r.location && r.location.toLowerCase().includes(searchTerm)) ||
-    (r.tags && r.tags.some(t => t.toLowerCase().includes(searchTerm)))
-  );
-
-  if (sortBy === 'signal') {
-    filtered.sort((a, b) => b.signalScore - a.signalScore);
-  } else if (sortBy === 'score') {
-    filtered.sort((a, b) => (b.score || 0) - (a.score || 0));
-  } else if (sortBy === 'name') {
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (sortBy === 'risk') {
-    filtered.sort((a, b) => a.riskScore - b.riskScore);
-  }
-
-  state.filtered = filtered;
-  renderCharts(filtered, state.external.summary);
-  renderRestaurants(filtered);
+function renderReplies(restaurant, comment) {
+  if (!comment.replies || !comment.replies.length) return '';
+  return `<div class="reply-list">${comment.replies.map(reply => `
+    <div class="comment-item" data-reply="${reply._id}">
+      <div class="comment-meta">
+        <span class="comment-author">${sanitize(reply.author || 'Anonymous')}</span>
+        <span class="comment-date">${formatDate(reply.createdAt)}</span>
+      </div>
+      <div class="comment-text">${sanitize(reply.text)}</div>
+    </div>
+  `).join('')}</div>`;
 }
 
 async function vote(id, action) {
@@ -745,11 +579,10 @@ async function vote(id, action) {
   const previousAction = sessionStorage.getItem(`voted-${id}`);
   if (previousAction === action) return;
 
-  // Synthetic records update locally
   if (restaurant.synthetic) {
     applyLocalVote(restaurant, action, previousAction);
     sessionStorage.setItem(`voted-${id}`, action);
-    renderRestaurants(state.filtered);
+    filterAndSort();
     return;
   }
 
@@ -765,7 +598,7 @@ async function vote(id, action) {
       sessionStorage.setItem(`voted-${id}`, action);
       const idx = state.restaurants.findIndex(r => r._id === id);
       if (idx !== -1) {
-        state.restaurants[idx] = { ...state.restaurants[idx], ...updated };
+        state.restaurants[idx] = shapeRestaurant({ ...state.restaurants[idx], ...updated }, idx);
       }
       filterAndSort();
     }
@@ -794,30 +627,29 @@ function applyLocalVote(restaurant, action, previousAction) {
       restaurant.score = (restaurant.score || 0) - 2;
     }
   }
-  restaurant.engagement = (restaurant.upvotes || 0) + (restaurant.downvotes || 0) + (restaurant.comments?.length || 0);
+  refreshDerived(restaurant);
 }
 
-async function submitComment(event, id) {
-  event.preventDefault();
-  const form = event.target;
-  const input = form.querySelector('input[name="commentText"]');
-  const btn = form.querySelector('button');
-  const text = input?.value || '';
-  if (!text.trim()) return;
+function refreshDerived(r) {
+  r.fanScore = computeFanScore(r);
+  r.engagement = computeEngagement(r);
+}
 
+async function submitComment(id, text, formEl) {
   const restaurant = state.restaurants.find(r => r._id === id);
   if (!restaurant) return;
-
+  const input = formEl.querySelector('.comment-input');
+  const button = formEl.querySelector('button');
   input.disabled = true;
-  btn.disabled = true;
-  btn.textContent = '...';
+  button.disabled = true;
+  button.textContent = '...';
 
   try {
     if (restaurant.synthetic) {
-      const newComment = { text, author: 'You', createdAt: new Date().toISOString() };
+      const newComment = enrichComment({ text, author: 'You', createdAt: new Date().toISOString(), replies: [] });
       restaurant.comments = [...(restaurant.comments || []), newComment];
-      restaurant.engagement = (restaurant.upvotes || 0) + (restaurant.downvotes || 0) + (restaurant.comments?.length || 0);
-      renderRestaurants(state.filtered);
+      refreshDerived(restaurant);
+      filterAndSort();
     } else {
       const response = await fetch(`${API_URL}/restaurants/${id}/comments`, {
         method: 'POST',
@@ -829,25 +661,67 @@ async function submitComment(event, id) {
         const newComment = await response.json();
         const idx = state.restaurants.findIndex(r => r._id === id);
         if (idx !== -1) {
-          state.restaurants[idx].comments = [...(state.restaurants[idx].comments || []), newComment];
-          state.restaurants[idx].engagement = (state.restaurants[idx].upvotes || 0) + (state.restaurants[idx].downvotes || 0) + (state.restaurants[idx].comments?.length || 0);
+          state.restaurants[idx].comments = [...(state.restaurants[idx].comments || []), enrichComment(newComment)];
+          refreshDerived(state.restaurants[idx]);
         }
-        renderRestaurants(state.filtered);
+        filterAndSort();
       }
     }
   } catch (error) {
     console.error('Error posting comment:', error);
   } finally {
     input.disabled = false;
-    btn.disabled = false;
-    btn.textContent = 'Post';
+    button.disabled = false;
+    button.textContent = 'Post';
     input.value = '';
   }
 }
 
-function setLoadingMessage(id, message) {
-  const el = document.getElementById(id);
-  if (el) el.innerHTML = `<div class="loading-simple">${message}</div>`;
+async function submitReply(restaurantId, commentId, text, formEl) {
+  const restaurant = state.restaurants.find(r => r._id === restaurantId);
+  if (!restaurant) return;
+  const input = formEl.querySelector('.reply-input');
+  const button = formEl.querySelector('button');
+  input.disabled = true;
+  button.disabled = true;
+  button.textContent = '...';
+
+  try {
+    if (restaurant.synthetic) {
+      const target = restaurant.comments.find(c => c._id === commentId);
+      if (target) {
+        target.replies = [...(target.replies || []), enrichComment({ text, author: 'You', createdAt: new Date().toISOString() })];
+        refreshDerived(restaurant);
+        filterAndSort();
+      }
+    } else {
+      const response = await fetch(`${API_URL}/restaurants/${restaurantId}/comments/${commentId}/replies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      if (response.ok) {
+        const newReply = await response.json();
+        const idx = state.restaurants.findIndex(r => r._id === restaurantId);
+        if (idx !== -1) {
+          const comment = state.restaurants[idx].comments.find(c => c._id === commentId);
+          if (comment) {
+            comment.replies = [...(comment.replies || []), enrichComment(newReply)];
+          }
+          refreshDerived(state.restaurants[idx]);
+        }
+        filterAndSort();
+      }
+    }
+  } catch (error) {
+    console.error('Error replying:', error);
+  } finally {
+    input.disabled = false;
+    button.disabled = false;
+    button.textContent = 'Send';
+    input.value = '';
+  }
 }
 
 async function submitRequest(formEl, payload) {
@@ -865,7 +739,7 @@ async function submitRequest(formEl, payload) {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
-      alert('Request sent successfully! Thanks for the signal.');
+      alert('Request sent successfully! Thanks for the lookout.');
       formEl.reset();
     } else {
       alert('Request logged locally (email not configured).');
@@ -881,6 +755,20 @@ async function submitRequest(formEl, payload) {
     const modal = document.getElementById('request-modal');
     modal?.classList.remove('active');
   }
+}
+
+function setLoadingMessage(id, message) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = `<div class="loading-simple">${message}</div>`;
+}
+
+function sanitize(str) {
+  return (str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function formatDate(value) {
+  const date = new Date(value || Date.now());
+  return date.toLocaleDateString();
 }
 
 function hashToNumber(str) {

@@ -3,199 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Halal Hot Chicken Intelligence Lab – analyst-grade dashboards, external data pipelines, and interactive experimentation.">
-    <title>Halal Hot Chicken Intelligence Lab</title>
+    <meta name="description" content="Vote and rank the best halal hot chicken spots. Flavor-first scores, honest heat meters, price vibes, and community comments in one place.">
+    <title>Halal Hot Chicken Ranker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
+    <div class="grain"></div>
+    <div class="glow"></div>
 
-    <div class="page">
-        <header class="hero">
-            <div class="hero-left">
-                <div class="logo-stack">
-                    <div class="logo-chip">
-                        <img src="images/logo.png" alt="Halal Hot Chicken Ranker Logo" class="site-logo">
-                    </div>
-                    <div>
-                        <p class="eyebrow">Data Analyst Edition</p>
-                        <h1>Halal Hot Chicken <span class="accent">Intelligence Lab</span></h1>
-                        <p class="lede">
-                            A full-stack, overkill analytics playground. Live API ranking, external web data fusion,
-                            KPI monitoring, scenario modeling, and storytelling built for analyst portfolios.
-                        </p>
-                        <div class="hero-badges">
-                            <span class="pill">External connectors live</span>
-                            <span class="pill pill-ghost">Scenario-ready</span>
-                            <span class="pill pill-ghost">Edge-cache aware</span>
-                        </div>
-                    </div>
+    <header class="hero">
+        <div class="hero-grid">
+            <div class="brand-mark">
+                <img src="images/logo.png" alt="Halal Hot Chicken Ranker logo">
+                <div class="badge">Flavor over hype</div>
+            </div>
+            <div class="hero-copy">
+                <p class="eyebrow">Community-powered rankings</p>
+                <h1>Halal Hot Chicken Ranker</h1>
+                <p class="lede">We taste, you vote. Track the spots serving real halal crunch — scored by flavor, juiciness, value, and the kind of heat you actually want to eat.</p>
+                <div class="hero-actions">
+                    <button class="primary-btn" id="cta-rank">See rankings</button>
+                    <button class="ghost-btn" id="open-request-modal">Suggest a spot</button>
                 </div>
-
-                <div class="controls">
-                    <label class="field">
-                        <span>Search dataset</span>
-                        <div class="field-input">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="search-input" placeholder="Filter by name, city, specialty...">
-                        </div>
-                    </label>
-                    <label class="field">
-                        <span>Sort by</span>
-                        <div class="field-input">
-                            <select id="sort-select">
-                                <option value="signal">Signal strength</option>
-                                <option value="score">Community score</option>
-                                <option value="name">Alphabetical</option>
-                                <option value="risk">Lowest risk</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </div>
-                    </label>
-                    <button id="open-request-modal" class="primary-btn">
-                        <i class="fa-solid fa-plus"></i>
-                        Add field observation
-                    </button>
-                </div>
-
-                <div class="kpi-grid">
-                    <div class="kpi">
-                        <p>Live spots</p>
-                        <h3 id="kpi-total">—</h3>
-                        <small>Across API + enrichment fabric</small>
-                    </div>
-                    <div class="kpi">
-                        <p>Mean viability</p>
-                        <h3 id="kpi-viability">—</h3>
-                        <small>Composite of demand, ops, climate</small>
-                    </div>
-                    <div class="kpi">
-                        <p>Engagement lift</p>
-                        <h3 id="kpi-engagement">—</h3>
-                        <small>Votes + comments per spot</small>
-                    </div>
-                    <div class="kpi">
-                        <p>External rows</p>
-                        <h3 id="kpi-rows">—</h3>
-                        <small>Remote data ingested from the web</small>
-                    </div>
+                <div class="pill-row">
+                    <span class="pill">Flavor-first scoring</span>
+                    <span class="pill pill-ghost">Price + vibe included</span>
+                    <span class="pill pill-ghost">Heat is a footnote</span>
                 </div>
             </div>
-        </header>
-
-        <section class="panel">
-            <div class="panel-head">
-                <div>
-                    <p class="eyebrow">Data fabric</p>
-                    <h2>Web connectors & freshness</h2>
+            <div class="hero-card">
+                <div class="hero-card-head">
+                    <p class="eyebrow">Tonight's leaders</p>
+                    <div class="live-dot">Live</div>
                 </div>
-                <span class="pill pill-ghost" id="pipeline-summary">Initializing...</span>
+                <div id="top-list" class="mini-list">
+                    <div class="loading-simple">Loading picks...</div>
+                </div>
+                <div class="hero-note">Votes update instantly. Add your take below.</div>
             </div>
-            <div id="pipeline-grid" class="pipeline-grid"></div>
-        </section>
+        </div>
+    </header>
 
-        <section class="panel">
-            <div class="panel-head">
-                <div>
-                    <p class="eyebrow">Executive readout</p>
-                    <h2>Insight stories</h2>
-                </div>
-                <div class="panel-actions">
-                    <span class="pill">Auto-generated from live data</span>
-                </div>
+    <section class="panel controls-panel">
+        <div class="field">
+            <label for="search-input">Search by name or city</label>
+            <div class="field-input">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Try: Houston or Nashville...">
             </div>
-            <div id="insight-feed" class="insight-grid"></div>
-        </section>
+        </div>
+        <div class="field">
+            <label for="sort-select">Sort by</label>
+            <div class="field-input">
+                <select id="sort-select">
+                    <option value="fan">Fan favorite</option>
+                    <option value="flavor">Flavor bomb</option>
+                    <option value="value">Best value</option>
+                    <option value="heat">Mildest heat</option>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </div>
+        <div class="field quick-filter">
+            <label>Quick filter</label>
+            <div class="filter-chips" id="quick-filters">
+                <button data-filter="budget" class="chip">Budget friendly</button>
+                <button data-filter="juicy" class="chip">Juicy + crispy</button>
+                <button data-filter="city" class="chip">Show city tags</button>
+            </div>
+        </div>
+    </section>
 
-        <section class="panel charts-panel">
-            <div class="panel-head">
-                <div>
-                    <p class="eyebrow">Visual analytics</p>
-                    <h2>Interactive dashboards</h2>
-                </div>
-                <div class="panel-actions gap">
-                    <label class="pill pill-ghost slider-label">
-                        Scenario lift
-                        <input type="range" id="scenario-slider" min="85" max="120" value="105">
-                        <span id="scenario-value">105%</span>
-                    </label>
-                </div>
-            </div>
-            <div class="chart-grid">
-                <div class="chart-card">
-                    <div class="chart-title">Signal leaderboard</div>
-                    <canvas id="chart-topline"></canvas>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Forecast & scenario</div>
-                    <canvas id="chart-trend"></canvas>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">Ops profile</div>
-                    <canvas id="chart-radar"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section class="panel">
-            <div class="panel-head">
-                <div>
-                    <p class="eyebrow">Field intelligence</p>
-                    <h2>Ranked feed, votes, and comments</h2>
-                </div>
-                <div class="panel-actions">
-                    <span class="pill pill-ghost">Edge cached</span>
-                    <span class="pill pill-ghost">Offline-friendly</span>
-                </div>
-            </div>
-            <main id="restaurants-list" class="rank-feed">
-                <div class="loading-simple">Loading enriched data...</div>
-            </main>
-        </section>
-
-        <section class="panel">
-            <div class="panel-head">
-                <div>
-                    <p class="eyebrow">Data intake</p>
-                    <h2>Submit a new signal</h2>
-                </div>
-            </div>
-            <form id="request-form" class="request-form">
-                <div class="form-group">
-                    <label for="req-name">Restaurant Name *</label>
-                    <input type="text" id="req-name" required placeholder="e.g. Cluckin' Good">
-                </div>
-                <div class="form-group">
-                    <label for="req-location">Location (City/State) *</label>
-                    <input type="text" id="req-location" required placeholder="e.g. Houston, TX">
-                </div>
-                <div class="form-group">
-                    <label for="req-link">Website/Maps Link</label>
-                    <input type="url" id="req-link" placeholder="https://...">
-                </div>
-                <button type="submit" class="primary-btn submit-btn">Ingest signal</button>
-            </form>
-        </section>
-
-        <footer class="footer">
+    <section class="panel" id="board">
+        <div class="panel-head">
             <div>
-                <p class="eyebrow">Portfolio ready</p>
-                <p class="lede small">Full-stack analytics, deterministic fallbacks, and interactive storytelling for hiring managers.</p>
+                <p class="eyebrow">Scoreboard</p>
+                <h2>Flavor-first leaderboard</h2>
             </div>
-            <div class="footer-actions">
-                <button id="open-request-modal-footer" class="ghost-btn">Open modal</button>
+            <span class="pill" id="live-meta">Fresh votes loading...</span>
+        </div>
+        <div id="top-strip" class="top-strip">
+            <div class="loading-simple">Finding the crunchiest bites...</div>
+        </div>
+    </section>
+
+    <section class="panel" id="rankings">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Your say</p>
+                <h2>Rank every halal hot chicken spot</h2>
             </div>
-        </footer>
-    </div>
+            <div class="panel-actions">
+                <span class="pill pill-ghost">Votes + comments in real time</span>
+            </div>
+        </div>
+        <main id="restaurants-list" class="rank-feed">
+            <div class="loading-simple">Loading spots...</div>
+        </main>
+    </section>
+
+    <section class="panel" id="request">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Add a spot</p>
+                <h2>Tell us who we missed</h2>
+            </div>
+            <div class="panel-actions">
+                <span class="pill">No email? We'll still log it.</span>
+            </div>
+        </div>
+        <form id="request-form" class="request-form">
+            <div class="form-grid">
+                <label class="form-group">
+                    <span>Restaurant Name *</span>
+                    <input type="text" id="req-name" required placeholder="e.g. Cluckin' Good">
+                </label>
+                <label class="form-group">
+                    <span>Location (City/State) *</span>
+                    <input type="text" id="req-location" required placeholder="e.g. Houston, TX">
+                </label>
+                <label class="form-group">
+                    <span>Website/Maps Link</span>
+                    <input type="url" id="req-link" placeholder="https://...">
+                </label>
+            </div>
+            <button type="submit" class="primary-btn submit-btn">Submit my pick</button>
+        </form>
+    </section>
+
+    <footer class="footer">
+        <div>
+            <p class="eyebrow">Made for the halal heat heads</p>
+            <p class="lede small">Flavor, crunch, price, vibe. Vote the spots you trust and help hungry people find their next plate.</p>
+        </div>
+        <div class="footer-actions">
+            <button id="open-request-modal-footer" class="ghost-btn">Suggest a spot</button>
+        </div>
+    </footer>
 
     <div id="request-modal" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal">&times;</button>
+            <button class="close-modal" aria-label="Close">&times;</button>
             <h2>Submit a Spot</h2>
             <p>Know a halal hot chicken place we missed? Let us know!</p>
             <form id="modal-request-form">
@@ -207,7 +159,7 @@
                     <label for="modal-req-location">Location (City/State) *</label>
                     <input type="text" id="modal-req-location" required placeholder="e.g. Houston, TX">
                 </div>
-                    <div class="form-group">
+                <div class="form-group">
                     <label for="modal-req-link">Website/Maps Link</label>
                     <input type="url" id="modal-req-link" placeholder="https://...">
                 </div>
@@ -216,7 +168,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

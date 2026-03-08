@@ -1,53 +1,48 @@
-# Halal Hot Chicken Intelligence Lab 🍗📊
+# Halal Hot Chicken Ranker 🔥🍗
 
-An over-the-top, portfolio-ready analytics experience that fuses the original hot chicken rankings with external web data, KPI dashboards, scenario modeling, and executive storytelling. The UI is fully offline-friendly with deterministic fallbacks when APIs or databases are unavailable.
+Flavor-first, community-powered rankings for halal hot chicken. Vote spots up or down, drop comments (and replies), and see which joints actually deliver on crunch, value, and vibe. Heat still shows up, but taste and price drive the leaderboard.
 
 ## What’s inside
 
-- **Data fabric**: Live API fetch for `/api/restaurants` plus external connectors (Plotly + Vega datasets) for macro, mobility, weather, and ops baselines.
-- **Analyst dashboards**: KPI grid, pipeline health, narrative insights, and three interactive Chart.js visuals (leaderboard, forecast, radar profile).
-- **Scenario modeling**: Adjustable lift slider that reprojects the forecast lines in real time.
-- **Field intelligence**: Enriched cards with demand, ops, risk, sparkline forecasts, voting, and comments. Synthetic IDs allow offline interactions when no database is present.
-- **Signal intake**: Inline + modal submission forms post to `/api/request` with graceful degradation when email is not configured.
+- **Brand-forward UI** that matches the Halal Hot Chicken Ranker logo and energy (no analyst dashboards).
+- **Fan-first leaderboard** with flavor, crunch, value, and vibe scores plus real-time vote counts.
+- **Voting that sticks** with local fallbacks when the API is offline.
+- **Threaded comments**: reply directly to takes and keep the convo under each spot.
+- **Spot requests** via `/api/request`, with graceful logging if email credentials are missing.
 
 ## Stack
 
-- **Backend**: Node.js + Express + Mongoose (API + email request handler). Cached connections for serverless friendliness.
-- **Frontend**: Vanilla JS, Chart.js (CDN), HTML5, CSS with Space Grotesk/Manrope. No build step required.
-- **External data**: Plotly datasets (population, airport traffic), Vega datasets (weather, cars) pulled directly from GitHub raw URLs.
+- **Backend**: Node.js + Express + Mongoose (cached connections for serverless). Endpoints for votes, comments, replies, and spot requests.
+- **Frontend**: Vanilla HTML/CSS/JS (no build step). Dynamic rendering + sessionStorage to prevent duplicate votes per session.
 
 ## Running locally
 
-1) Install dependencies
-```bash
-npm install
-```
+1. Install dependencies
+   ```bash
+   npm install
+   ```
+2. Provide MongoDB if you want persistent votes/comments
+   ```bash
+   export MONGODB_URI="mongodb://localhost:27017/halal-chicken-ranker"
+   ```
+3. Start the server
+   ```bash
+   npm start
+   ```
+   Visit `http://localhost:5000`.
 
-2) Provide MongoDB if you want persistent votes/comments
-```bash
-export MONGODB_URI="mongodb://localhost:27017/halal-chicken-ranker"
-```
-
-3) Start the server
-```bash
-npm start
-```
-Visit `http://localhost:5000`.
-
-> No automated tests or linters are configured. Voting/comments work against Mongo; synthetic data is used when the API or DB is unreachable.
+> No automated tests or linters are configured. Voting/comments use Mongo when available; synthetic data enables offline interactions.
 
 ## Key API endpoints
 
 - `GET /api/restaurants` — Sorted restaurants (score desc).
 - `POST /api/restaurants/:id/vote` — Body `{ action, previousAction }` for up/down with swap support.
-- `POST /api/restaurants/:id/comments` — Body `{ text, author? }`.
-- `POST /api/request` — Body `{ name, location, link? }` (logs locally when email creds absent).
+- `POST /api/restaurants/:id/comments` — Body `{ text, author? }` adds a top-level comment.
+- `POST /api/restaurants/:id/comments/:commentId/replies` — Body `{ text, author? }` replies to an existing comment.
+- `POST /api/request` — Body `{ name, location, link? }` (logs locally when email creds are absent).
 
 ## Deployment notes
 
 - Static assets live in `public/` and are cached with compression + Helmet.
-- External datasets are fetched client-side; the experience gracefully falls back to bundled analyst-grade seed data when any connector is degraded.
-
-## License
-
-MIT
+- Fallback seed data keeps the experience working when the API is unreachable.
+- Session-based vote memory prevents duplicate clicks from reapplying the same action.
