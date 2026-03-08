@@ -189,14 +189,15 @@ app.post('/api/restaurants/:id/comments', async (req, res) => {
 
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
-      { 
-        $push: { 
-          comments: { 
+      {
+        $push: {
+          comments: {
             text: text.trim(),
             author: author || 'Anonymous',
-            createdAt: new Date()
-          } 
-        } 
+            createdAt: new Date(),
+            replies: []
+          }
+        }
       },
       { new: true }
     );
@@ -211,6 +212,44 @@ app.post('/api/restaurants/:id/comments', async (req, res) => {
   } catch (error) {
     console.error('Error adding comment:', error);
     res.status(500).json({ error: 'Failed to add comment', details: error.message });
+  }
+});
+
+// Reply to a specific comment
+app.post('/api/restaurants/:id/comments/:commentId/replies', async (req, res) => {
+  try {
+    await connectToDatabase();
+    const { text, author } = req.body;
+
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({ error: 'Reply text is required' });
+    }
+
+    const { id, commentId } = req.params;
+    const restaurant = await Restaurant.findOneAndUpdate(
+      { _id: id, 'comments._id': commentId },
+      {
+        $push: {
+          'comments.$.replies': {
+            text: text.trim(),
+            author: author || 'Anonymous',
+            createdAt: new Date()
+          }
+        }
+      },
+      { new: true }
+    );
+
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant or comment not found' });
+    }
+
+    const parentComment = restaurant.comments.find(c => c._id.toString() === commentId);
+    const newReply = parentComment?.replies[parentComment.replies.length - 1];
+    res.json(newReply);
+  } catch (error) {
+    console.error('Error adding reply:', error);
+    res.status(500).json({ error: 'Failed to add reply', details: error.message });
   }
 });
 

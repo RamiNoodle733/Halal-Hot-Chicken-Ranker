@@ -7,6 +7,18 @@ const restaurantSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  location: {
+    type: String,
+    default: ''
+  },
+  city: {
+    type: String,
+    default: ''
+  },
+  state: {
+    type: String,
+    default: ''
+  },
   description: {
     type: String,
     default: ''
@@ -19,10 +31,43 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  heatLevel: {
+    type: Number,
+    default: 5
+  },
+  priceTier: {
+    type: Number,
+    default: 2
+  },
+  flavorScore: {
+    type: Number,
+    default: 7
+  },
+  crunchScore: {
+    type: Number,
+    default: 7
+  },
+  valueScore: {
+    type: Number,
+    default: 7
+  },
+  vibeScore: {
+    type: Number,
+    default: 7
+  },
+  specialty: {
+    type: String,
+    default: ''
+  },
   comments: [{
     text: { type: String, required: true },
     author: { type: String, default: 'Anonymous' },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    replies: [{
+      text: { type: String, required: true },
+      author: { type: String, default: 'Anonymous' },
+      createdAt: { type: Date, default: Date.now }
+    }]
   }],
   upvotes: {
     type: Number,
