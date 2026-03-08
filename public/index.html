@@ -3,59 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The definitive Halal Hot Chicken ranking.">
-    <title>Halal Hot Chicken Ranker</title>
+    <meta name="description" content="Halal Hot Chicken Intelligence Lab – analyst-grade dashboards, external data pipelines, and interactive experimentation.">
+    <title>Halal Hot Chicken Intelligence Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Teko:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="bg-texture"></div>
-    
-    <div class="main-container">
-        <header class="brand-header">
-            <div class="logo-container">
-                <img src="images/logo.png" alt="Halal Hot Chicken Ranker Logo" class="site-logo">
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <div class="page">
+        <header class="hero">
+            <div class="hero-left">
+                <div class="logo-stack">
+                    <div class="logo-chip">
+                        <img src="images/logo.png" alt="Halal Hot Chicken Ranker Logo" class="site-logo">
+                    </div>
+                    <div>
+                        <p class="eyebrow">Data Analyst Edition</p>
+                        <h1>Halal Hot Chicken <span class="accent">Intelligence Lab</span></h1>
+                        <p class="lede">
+                            A full-stack, overkill analytics playground. Live API ranking, external web data fusion,
+                            KPI monitoring, scenario modeling, and storytelling built for analyst portfolios.
+                        </p>
+                        <div class="hero-badges">
+                            <span class="pill">External connectors live</span>
+                            <span class="pill pill-ghost">Scenario-ready</span>
+                            <span class="pill pill-ghost">Edge-cache aware</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <label class="field">
+                        <span>Search dataset</span>
+                        <div class="field-input">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-input" placeholder="Filter by name, city, specialty...">
+                        </div>
+                    </label>
+                    <label class="field">
+                        <span>Sort by</span>
+                        <div class="field-input">
+                            <select id="sort-select">
+                                <option value="signal">Signal strength</option>
+                                <option value="score">Community score</option>
+                                <option value="name">Alphabetical</option>
+                                <option value="risk">Lowest risk</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </label>
+                    <button id="open-request-modal" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Add field observation
+                    </button>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi">
+                        <p>Live spots</p>
+                        <h3 id="kpi-total">—</h3>
+                        <small>Across API + enrichment fabric</small>
+                    </div>
+                    <div class="kpi">
+                        <p>Mean viability</p>
+                        <h3 id="kpi-viability">—</h3>
+                        <small>Composite of demand, ops, climate</small>
+                    </div>
+                    <div class="kpi">
+                        <p>Engagement lift</p>
+                        <h3 id="kpi-engagement">—</h3>
+                        <small>Votes + comments per spot</small>
+                    </div>
+                    <div class="kpi">
+                        <p>External rows</p>
+                        <h3 id="kpi-rows">—</h3>
+                        <small>Remote data ingested from the web</small>
+                    </div>
+                </div>
             </div>
-            <h1 class="brand-title">HALAL HOT CHICKEN <span class="accent">RANKER</span></h1>
         </header>
 
-        <div class="toolbar">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="Find a spot...">
-                <i class="fa-solid fa-magnifying-glass"></i>
+        <section class="panel">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Data fabric</p>
+                    <h2>Web connectors & freshness</h2>
+                </div>
+                <span class="pill pill-ghost" id="pipeline-summary">Initializing...</span>
             </div>
-            <div class="sort-box">
-                <select id="sort-select">
-                    <option value="score">Highest Rated</option>
-                    <option value="name">Alphabetical</option>
-                </select>
-                <i class="fa-solid fa-chevron-down"></i>
+            <div id="pipeline-grid" class="pipeline-grid"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Executive readout</p>
+                    <h2>Insight stories</h2>
+                </div>
+                <div class="panel-actions">
+                    <span class="pill">Auto-generated from live data</span>
+                </div>
             </div>
-            <button id="open-request-modal" class="action-btn">
-                <i class="fa-solid fa-plus"></i> Submit Spot
-            </button>
-        </div>
+            <div id="insight-feed" class="insight-grid"></div>
+        </section>
 
-        <main id="restaurants-list" class="rank-feed">
-            <!-- Content injected by JS -->
-            <div class="loading-simple">Loading...</div>
-        </main>
+        <section class="panel charts-panel">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Visual analytics</p>
+                    <h2>Interactive dashboards</h2>
+                </div>
+                <div class="panel-actions gap">
+                    <label class="pill pill-ghost slider-label">
+                        Scenario lift
+                        <input type="range" id="scenario-slider" min="85" max="120" value="105">
+                        <span id="scenario-value">105%</span>
+                    </label>
+                </div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-title">Signal leaderboard</div>
+                    <canvas id="chart-topline"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Forecast & scenario</div>
+                    <canvas id="chart-trend"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Ops profile</div>
+                    <canvas id="chart-radar"></canvas>
+                </div>
+            </div>
+        </section>
 
-        <footer>
-            <p>&copy; 2025 Halal Hot Chicken Ranker</p>
-        </footer>
-    </div>
+        <section class="panel">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Field intelligence</p>
+                    <h2>Ranked feed, votes, and comments</h2>
+                </div>
+                <div class="panel-actions">
+                    <span class="pill pill-ghost">Edge cached</span>
+                    <span class="pill pill-ghost">Offline-friendly</span>
+                </div>
+            </div>
+            <main id="restaurants-list" class="rank-feed">
+                <div class="loading-simple">Loading enriched data...</div>
+            </main>
+        </section>
 
-    <!-- Request Modal -->
-    <div id="request-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <h2>Submit a Spot</h2>
-            <p>Know a halal hot chicken place we missed? Let us know!</p>
-            <form id="request-form">
+        <section class="panel">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Data intake</p>
+                    <h2>Submit a new signal</h2>
+                </div>
+            </div>
+            <form id="request-form" class="request-form">
                 <div class="form-group">
                     <label for="req-name">Restaurant Name *</label>
                     <input type="text" id="req-name" required placeholder="e.g. Cluckin' Good">
@@ -68,11 +178,45 @@
                     <label for="req-link">Website/Maps Link</label>
                     <input type="url" id="req-link" placeholder="https://...">
                 </div>
-                <button type="submit" class="submit-btn">Send Request</button>
+                <button type="submit" class="primary-btn submit-btn">Ingest signal</button>
+            </form>
+        </section>
+
+        <footer class="footer">
+            <div>
+                <p class="eyebrow">Portfolio ready</p>
+                <p class="lede small">Full-stack analytics, deterministic fallbacks, and interactive storytelling for hiring managers.</p>
+            </div>
+            <div class="footer-actions">
+                <button id="open-request-modal-footer" class="ghost-btn">Open modal</button>
+            </div>
+        </footer>
+    </div>
+
+    <div id="request-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Submit a Spot</h2>
+            <p>Know a halal hot chicken place we missed? Let us know!</p>
+            <form id="modal-request-form">
+                <div class="form-group">
+                    <label for="modal-req-name">Restaurant Name *</label>
+                    <input type="text" id="modal-req-name" required placeholder="e.g. Cluckin' Good">
+                </div>
+                <div class="form-group">
+                    <label for="modal-req-location">Location (City/State) *</label>
+                    <input type="text" id="modal-req-location" required placeholder="e.g. Houston, TX">
+                </div>
+                    <div class="form-group">
+                    <label for="modal-req-link">Website/Maps Link</label>
+                    <input type="url" id="modal-req-link" placeholder="https://...">
+                </div>
+                <button type="submit" class="primary-btn submit-btn">Send request</button>
             </form>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
